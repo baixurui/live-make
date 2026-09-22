@@ -95,6 +95,20 @@ test("creates and updates topics through administrator endpoints", async () => {
   assert.equal(requests[1].options.body, JSON.stringify({ enabled: false }));
 });
 
+test("creates a content task from a selected recommendation", async () => {
+  const requests = [];
+  const api = createApi(async (url, options) => {
+    requests.push({ url, options });
+    return { ok: true, json: async () => ({ id: "task-1" }) };
+  });
+
+  await api.createTask("AI 助手在客服中的新趋势", "topic-1", "LOW");
+
+  assert.equal(requests[0].url, "/api/v1/tasks");
+  assert.equal(requests[0].options.method, "POST");
+  assert.equal(requests[0].options.body, JSON.stringify({ title: "AI 助手在客服中的新趋势", topic_id: "topic-1", risk_level: "LOW" }));
+});
+
 test("returns a demo approval when the approval API is unavailable", async () => {
   const api = createApi(async () => { throw new Error("offline"); });
   const result = await api.approve("task-1", "SCRIPT", "APPROVED");

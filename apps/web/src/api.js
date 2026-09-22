@@ -19,6 +19,7 @@ export function createApi(fetcher = fetch) {
     createTopic: (name, keywords = []) => request("/topics", { method: "POST", body: JSON.stringify({ name, keywords, enabled: true }) }),
     updateTopic: (topicId, changes) => request(`/topics/${topicId}`, { method: "PATCH", body: JSON.stringify(changes) }),
     getRecommendations: () => withFallback("/recommendations", demo.recommendations),
+    createTask: (title, topicId, riskLevel = "LOW") => request("/tasks", { method: "POST", body: JSON.stringify({ title, topic_id: topicId, risk_level: riskLevel }) }),
     getMetrics: () => withFallback("/metrics", demo.metrics),
     getTask: (taskId) => withFallback(`/tasks/${taskId}`, { ...demo.task, id: taskId }),
     async approve(taskId, kind, decision, comment = "") {
