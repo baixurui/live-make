@@ -1,0 +1,21 @@
+services:
+  publishing-insights:
+    build: .
+    ports:
+      - "127.0.0.1:8014:8014"
+    environment:
+      WORKFLOW_PUBLISHING_TOKEN: ${WORKFLOW_PUBLISHING_TOKEN:?set workflow token}
+      METRICS_TOKEN_SCOPES: ${METRICS_TOKEN_SCOPES:?set metrics token scopes}
+      BUSINESS_API_URL: ${BUSINESS_API_URL:?set business API URL}
+      BUSINESS_API_TOKEN: ${BUSINESS_API_TOKEN:?set business API token}
+      PUBLISHING_SIMULATION_SEED: ${PUBLISHING_SIMULATION_SEED:-live-make-v1}
+    volumes:
+      - publishing-data:/data
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8014/healthz', timeout=3)"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
+volumes:
+  publishing-data:

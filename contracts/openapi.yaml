@@ -45,14 +45,25 @@ paths:
         '201':
           description: Approval recorded
   /api/v1/metrics:
-    get:
-      summary: Get seven-day core metrics
-      responses:
-        '200':
-          description: Metric summary
+    $ref: './publishing-insights.openapi.json#/paths/~1api~1v1~1metrics'
+  /api/v1/internal/publishing/requests:
+    $ref: './publishing-insights.openapi.json#/paths/~1api~1v1~1internal~1publishing~1requests'
+  /api/v1/internal/publishing/receipts/{receipt_id}:
+    $ref: './publishing-insights.openapi.json#/paths/~1api~1v1~1internal~1publishing~1receipts~1{receipt_id}'
+  /api/v1/internal/publishing/events:
+    $ref: './publishing-insights.openapi.json#/paths/~1api~1v1~1internal~1publishing~1events'
+  /api/v1/internal/publishing/events/{event_id}/ack:
+    $ref: './publishing-insights.openapi.json#/paths/~1api~1v1~1internal~1publishing~1events~1{event_id}~1ack'
+  /api/v1/internal/tasks/{task_id}/publishing-context:
+    $ref: './publishing-insights.openapi.json#/paths/~1api~1v1~1internal~1tasks~1{task_id}~1publishing-context'
   /api/v1/internal/tasks/{task_id}/transitions:
     post:
       summary: Apply a workflow-authorized task transition
       responses:
         '204':
           description: Transition applied
+components:
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer

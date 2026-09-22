@@ -16,6 +16,11 @@
 - `contracts`：跨模块 API、事件和枚举的唯一来源。
 - `tests/contracts`：共享契约校验。
 
+## 发布与指标模块
+
+`services/publishing-insights` 已提供独立的模拟发布服务、可靠结果事件及最近 7 天指标接口。
+运行、测试和工作流对接方法见 [模块说明](services/publishing-insights/README.md)。模块负责一次重试，工作流消费最终失败事件后负责转 `PAUSED`。
+
 ## 验证
 
 ```powershell

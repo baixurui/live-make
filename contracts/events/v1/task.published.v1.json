@@ -1,1 +1,22 @@
-{"$schema":"https://json-schema.org/draft/2020-12/schema","type":"object","required":["event_id","event_type","occurred_at","correlation_id","idempotency_key","data"],"properties":{"event_id":{"type":"string"},"event_type":{"const":"task.published.v1"},"occurred_at":{"type":"string","format":"date-time"},"correlation_id":{"type":"string"},"idempotency_key":{"type":"string"},"data":{"type":"object","required":["task_id","receipt_id","platform_post_id","published_at"]}}}
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["event_id", "event_type", "occurred_at", "correlation_id", "idempotency_key", "data"],
+  "properties": {
+    "event_id": {"type": "string", "minLength": 1},
+    "event_type": {"const": "task.published.v1"},
+    "occurred_at": {"type": "string", "format": "date-time"},
+    "correlation_id": {"type": "string", "minLength": 1},
+    "idempotency_key": {"type": "string", "minLength": 1},
+    "data": {
+      "type": "object",
+      "required": ["task_id", "receipt_id", "platform_post_id", "published_at"],
+      "properties": {
+        "task_id": {"type": "string", "minLength": 1},
+        "receipt_id": {"type": "string", "minLength": 1},
+        "platform_post_id": {"type": "string", "minLength": 1},
+        "published_at": {"type": "string", "format": "date-time"}
+      }
+    }
+  }
+}
