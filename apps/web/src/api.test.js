@@ -41,3 +41,23 @@ test("falls back to the demo task when task detail API is unavailable", async ()
   assert.equal(result.source, "demo");
   assert.equal(result.data.id, "LM-20260922-01");
 });
+
+test("submits an approval decision to the task approval endpoint", async () => {
+  const requests = [];
+  const api = createApi(async (url, options) => {
+    requests.push({ url, options });
+    return { ok: true, status: 201, json: async () => ({ id: "approval-1" }) };
+  });
+
+  await api.approve("task-1", "APPROVE");
+
+  assert.equal(requests[0].url, "/api/v1/tasks/task-1/approvals");
+  assert.equal(requests[0].options.method, "POST");
+  assert.equal(requests[0].options.body, JSON.stringify({ decision: "APPROVE" }));
+});
+
+test("returns a demo approval when the approval API is unavailable", async () => {
+  const api = createApi(async () => { throw new Error("offline"); });
+  const result = await api.approve("task-1", "APPROVE");
+  assert.equal(result.source, "demo");
+});

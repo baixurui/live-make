@@ -19,6 +19,9 @@ export function createApi(fetcher = fetch) {
     getRecommendations: () => withFallback("/recommendations", demo.recommendations),
     getMetrics: () => withFallback("/metrics", demo.metrics),
     getTask: (taskId) => withFallback(`/tasks/${taskId}`, { ...demo.task, id: taskId }),
-    approve: (taskId, decision) => request(`/tasks/${taskId}/approvals`, { method: "POST", body: JSON.stringify({ decision }) })
+    async approve(taskId, decision) {
+      try { return { source: "api", data: await request(`/tasks/${taskId}/approvals`, { method: "POST", body: JSON.stringify({ decision }) }) }; }
+      catch { return { source: "demo", data: { id: `demo-${Date.now()}` } }; }
+    }
   };
 }
