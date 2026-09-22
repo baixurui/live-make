@@ -56,6 +56,16 @@ test("reads recommendations and metrics from versioned API endpoints", async () 
   assert.deepEqual(urls, ["/api/v1/recommendations", "/api/v1/metrics"]);
 });
 
+test("preserves the business API seven-day metric fields", async () => {
+  const api = createApi(async () => ({ ok: true, json: async () => ({ window_days: 7, tasks_created: 12, tasks_published: 8, tasks_failed: 1 }) }));
+
+  const result = await api.getMetrics();
+
+  assert.equal(result.data.tasks_created, 12);
+  assert.equal(result.data.tasks_published, 8);
+  assert.equal(result.data.tasks_failed, 1);
+});
+
 test("reads the authenticated task list from the business API", async () => {
   const urls = [];
   const api = createApi(async (url) => {
