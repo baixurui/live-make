@@ -75,6 +75,7 @@ class AssetRecord:
     duration_ms: int
     version: str
     license_status: str
+    uri: str = ""
     upstream_asset_ids: tuple[str, ...] = ()
     downstream_asset_ids: tuple[str, ...] = ()
     created_at: str = ""

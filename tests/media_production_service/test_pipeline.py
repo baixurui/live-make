@@ -7,6 +7,7 @@ SERVICE_SRC = Path(__file__).parents[2] / "services" / "media-production" / "src
 sys.path.insert(0, str(SERVICE_SRC))
 
 from media_production.pipeline import MediaProductionPipeline
+from media_production.asset_adapter import resolve_video_uri, serialize_asset
 
 
 class PipelineTests(unittest.TestCase):
@@ -20,8 +21,8 @@ class PipelineTests(unittest.TestCase):
             "idempotency_key": "task-1-media-v1",
             "data": {
                 "task_id": "task-1",
-                "script_version": "script-v1",
-                "media_version": "media-v1",
+                "script_version": 1,
+                "media_version": 1,
                 "script": "今天介绍一个值得关注的主题。",
                 "output_spec": {},
             },
@@ -42,9 +43,23 @@ class PipelineTests(unittest.TestCase):
     def test_retry_reuses_upstream_voice_asset(self):
         first = self.pipeline.handle_media_requested(self.event)
         self.event["idempotency_key"] = "task-1-media-v2"
-        self.event["data"]["media_version"] = "media-v2"
+        self.event["data"]["media_version"] = 2
         second = self.pipeline.handle_media_requested(self.event)
         self.assertEqual(first["data"]["asset_ids"][1], second["data"]["asset_ids"][1])
+
+    def test_video_uri_and_asset_metadata_are_adapter_ready(self):
+        result = self.pipeline.handle_media_requested(self.event)
+        uri = resolve_video_uri(result, self.pipeline.asset_history)
+        self.assertTrue(uri.startswith("mock://video/"))
+        video = self.pipeline.asset_history[-1]
+        metadata = serialize_asset(video)
+        self.assertEqual(metadata["uri"], uri)
+        self.assertEqual(metadata["metadata"]["upstream_asset_ids"], list(video.upstream_asset_ids))
+
+    def test_versions_must_match_workflow_integer_contract(self):
+        self.event["data"]["media_version"] = "media-v1"
+        with self.assertRaises(ValueError):
+            self.pipeline.handle_media_requested(self.event)
 
     def test_reprocessing_same_key_is_idempotent(self):
         first = self.pipeline.handle_media_requested(self.event)

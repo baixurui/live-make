@@ -5,7 +5,7 @@ from typing import Any, Mapping
 
 from .contract_adapter import build_qc_completed_event
 from .mock_provider import DeterministicMockProvider
-from .models import OutputSpec
+from .models import AssetRecord, OutputSpec
 from .providers import MediaProvider
 from .qc import run_quality_checks
 from .subtitles import build_simplified_chinese_subtitles
@@ -16,8 +16,8 @@ class MediaProductionPipeline:
         self.provider = provider or DeterministicMockProvider()
         self.avatar_id = avatar_id
         self._completed: dict[str, dict[str, Any]] = {}
-        self._assets: dict[str, Any] = {}
-        self._upstream_voice_cache: dict[str, Any] = {}
+        self._assets: dict[str, AssetRecord] = {}
+        self._upstream_voice_cache: dict[str, AssetRecord] = {}
 
     def handle_media_requested(self, event: Mapping[str, Any]) -> dict[str, Any]:
         self._validate_request(event)
@@ -26,6 +26,7 @@ class MediaProductionPipeline:
             return self._completed[idempotency_key]
 
         data = event["data"]
+        self._validate_versions(data)
         output_spec = OutputSpec.from_mapping(data.get("output_spec"))
         script = str(data.get("script", "今日为你介绍一个值得关注的主题。"))
         candidates = self.provider.avatar_candidates()
@@ -57,10 +58,17 @@ class MediaProductionPipeline:
         return response
 
     @property
-    def asset_history(self) -> tuple[Any, ...]:
+    def asset_history(self) -> tuple[AssetRecord, ...]:
         """Return recorded assets for audit/history consumers."""
 
         return tuple(self._assets.values())
+
+    @staticmethod
+    def _validate_versions(data: Mapping[str, Any]) -> None:
+        for field in ("script_version", "media_version"):
+            value = data[field]
+            if isinstance(value, bool) or not isinstance(value, int) or value < 1:
+                raise ValueError(f"{field} must be a positive integer")
 
     @staticmethod
     def _validate_request(event: Mapping[str, Any]) -> None:

@@ -13,6 +13,11 @@ The shared contracts are intentionally unchanged while the event payload is
 being aligned with the other service owners. Provisional values are isolated in
 `src/media_production/contract_adapter.py`.
 
+Workflow requests use positive integer `script_version` and `media_version`
+values. The workflow adapter can use `resolve_video_uri` and
+`serialize_asset` from `src/media_production/asset_adapter.py` to persist media
+versions and assets through the business API.
+
 Run the tests from the repository root:
 
 ```powershell

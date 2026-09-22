@@ -31,6 +31,7 @@ class DeterministicMockProvider(MediaProvider):
                 duration_ms=0,
                 version=f"v{index}",
                 license_status="verified",
+                uri=f"mock://avatar/avatar-{index:03d}",
                 created_at=_created_at(),
             )
             for index in range(1, 5)
@@ -56,6 +57,7 @@ class DeterministicMockProvider(MediaProvider):
             duration_ms=max(7000, min(15000, len(script) * 180)),
             version=voice_version,
             license_status="verified",
+            uri=f"mock://voice/{_stable_id('voice', script, voice_version)}.wav",
             created_at=_created_at(),
         )
 
@@ -68,8 +70,9 @@ class DeterministicMockProvider(MediaProvider):
         output_spec: OutputSpec,
     ) -> RenderedMedia:
         duration = max(output_spec.duration_min_seconds, min(output_spec.duration_max_seconds, len(script) * 0.18))
+        video_id = _stable_id("video", script, avatar.version, voice.version)
         asset = AssetRecord(
-            asset_id=_stable_id("video", script, avatar.version, voice.version),
+            asset_id=video_id,
             asset_type="video",
             supplier="mock",
             model="deterministic-renderer",
@@ -82,6 +85,7 @@ class DeterministicMockProvider(MediaProvider):
             duration_ms=round(duration * 1000),
             version="v1",
             license_status="verified",
+            uri=f"mock://video/{video_id}.mp4",
             upstream_asset_ids=(avatar.asset_id, voice.asset_id),
             created_at=_created_at(),
         )
