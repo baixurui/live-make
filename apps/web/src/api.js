@@ -14,13 +14,15 @@ export function createApi(fetcher = fetch) {
   };
   const withFallback = async (path, fallback) => { try { return { source: "api", data: await request(path) }; } catch { return { source: "demo", data: fallback }; } };
   return {
-    async login(username, password) { try { const data = await request("/auth/login", { method: "POST", body: JSON.stringify({ username, password }) }); token = data.access_token; return { source: "api", data }; } catch { return { source: "demo", data: { access_token: "demo-token", username, role: "ADMIN" } }; } },
+    async login(username, password) { try { const data = await request("/auth/login", { method: "POST", body: JSON.stringify({ username, password }) }); token = data.access_token; return { source: "api", data }; } catch { return { source: "demo", data: { access_token: "demo-token", account: { username, is_admin: true } } }; } },
     getTopics: () => withFallback("/topics", demo.topics),
+    createTopic: (name, keywords = []) => request("/topics", { method: "POST", body: JSON.stringify({ name, keywords, enabled: true }) }),
+    updateTopic: (topicId, changes) => request(`/topics/${topicId}`, { method: "PATCH", body: JSON.stringify(changes) }),
     getRecommendations: () => withFallback("/recommendations", demo.recommendations),
     getMetrics: () => withFallback("/metrics", demo.metrics),
     getTask: (taskId) => withFallback(`/tasks/${taskId}`, { ...demo.task, id: taskId }),
-    async approve(taskId, decision) {
-      try { return { source: "api", data: await request(`/tasks/${taskId}/approvals`, { method: "POST", body: JSON.stringify({ decision }) }) }; }
+    async approve(taskId, kind, decision, comment = "") {
+      try { return { source: "api", data: await request(`/tasks/${taskId}/approvals`, { method: "POST", body: JSON.stringify({ kind, decision, comment }) }) }; }
       catch { return { source: "demo", data: { id: `demo-${Date.now()}` } }; }
     }
   };
