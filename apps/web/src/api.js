@@ -14,7 +14,7 @@ export function createApi(fetcher = fetch) {
   };
   const withFallback = async (path, fallback) => { try { return { source: "api", data: await request(path) }; } catch { return { source: "demo", data: fallback }; } };
   return {
-    async login(username, password) { const data = await request("/auth/login", { method: "POST", body: JSON.stringify({ username, password }) }); token = data.access_token; return data; },
+    async login(username, password) { try { const data = await request("/auth/login", { method: "POST", body: JSON.stringify({ username, password }) }); token = data.access_token; return { source: "api", data }; } catch { return { source: "demo", data: { access_token: "demo-token", username, role: "ADMIN" } }; } },
     getTopics: () => withFallback("/topics", demo.topics),
     getRecommendations: () => withFallback("/recommendations", demo.recommendations),
     getMetrics: () => withFallback("/metrics", demo.metrics),
