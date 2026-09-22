@@ -32,9 +32,10 @@ components:
       type: object
       required: [kind, decision]
       properties:
-        kind: {type: string}
+        kind: {type: string, enum: [SCRIPT, VIDEO]}
         decision: {type: string, enum: [APPROVED, REJECTED]}
         comment: {type: string}
+        expected_version: {type: integer, minimum: 1, description: Reject approval if the displayed script or media version is no longer current.}
     TransitionRequest:
       type: object
       required: [target_status]
@@ -141,6 +142,7 @@ paths:
   /api/v1/internal/tasks/{task_id}/transitions:
     post:
       summary: Apply a workflow-authorized task transition
+      description: Registered workflow tasks are advanced transactionally by the workflow engine. This legacy endpoint rejects such tasks to prevent bypassing approval and scheduling gates.
       parameters:
         - in: header
           name: X-Internal-Service

@@ -78,7 +78,7 @@ class BusinessApi:
                 return Response(200, self.database.get_task(route.split("/")[4]))
             if method == "POST" and route.startswith("/api/v1/tasks/") and route.endswith("/approvals"):
                 task_id = route.split("/")[4]
-                return Response(201, self.database.add_approval(actor["id"], task_id, str(body["kind"]), str(body["decision"]), str(body.get("comment", ""))))
+                return Response(201, self.database.add_approval(actor["id"], task_id, str(body["kind"]), str(body["decision"]), str(body.get("comment", "")), body.get("expected_version")))
             if method == "GET" and route == "/api/v1/metrics":
                 return Response(200, self._metrics())
             if method == "POST" and route == "/api/v1/admin/accounts":
