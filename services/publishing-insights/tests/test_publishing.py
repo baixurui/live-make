@@ -91,7 +91,7 @@ class PublishingTests(unittest.TestCase):
         task = f"task-{key}"
         self.source.records[task] = TaskContext(
             task_id=task, account_id=account, status="SCHEDULED", scheduled_at=scheduled,
-            media_version="media-1", approved_media_version="media-1", script_approved=True,
+            media_version=1, approved_media_version=1, script_approved=True,
             video_approved=True, qc_passed=True, risk_level="LOW", qc_score=80.0, review_score=70.0,
         )
         return PublishRequest(
@@ -123,7 +123,7 @@ class PublishingTests(unittest.TestCase):
             ({"video_approved": False}, "APPROVAL_REQUIRED"),
             ({"qc_passed": False}, "APPROVAL_REQUIRED"),
             ({"risk_level": "BLOCKED"}, "RISK_BLOCKED"),
-            ({"approved_media_version": "old"}, "APPROVED_VERSION_MISMATCH"),
+            ({"approved_media_version": 2}, "APPROVED_VERSION_MISMATCH"),
             ({"task_id": "another"}, "TASK_MISMATCH"),
             ({"scheduled_at": START + timedelta(days=1)}, "SCHEDULE_MISMATCH"),
         ]
@@ -145,7 +145,7 @@ class PublishingTests(unittest.TestCase):
                 self.service.submit(request)
         self.clock.now = START
         for changes, code in [({"account_id": "fake"}, "ACCOUNT_MISMATCH"),
-                              ({"media_version": "old"}, "MEDIA_VERSION_MISMATCH")]:
+                              ({"media_version": 2}, "MEDIA_VERSION_MISMATCH")]:
             altered = request.model_copy(update={"data": request.data.model_copy(update=changes)})
             with self.assertRaisesRegex(DomainError, code):
                 self.service.submit(altered)
@@ -175,7 +175,7 @@ class PublishingTests(unittest.TestCase):
         request = self.request()
         original = self.service.submit(request)
         for changes in ({"receipt_id": "other"}, {"task_id": "other"},
-                        {"account_id": "other"}, {"media_version": "other"},
+                        {"account_id": "other"}, {"media_version": 2},
                         {"scheduled_at": START + timedelta(days=1)}):
             altered = request.model_copy(update={"data": request.data.model_copy(update=changes)})
             with self.assertRaisesRegex(DomainError, "IDEMPOTENCY_CONFLICT"):
@@ -241,7 +241,7 @@ class PublishingTests(unittest.TestCase):
     def test_context_change_between_acceptance_and_attempt_is_rejected(self):
         request = self.request()
         initial = self.source.get(request.data.task_id)
-        changed = initial.model_copy(update={"media_version": "new", "approved_media_version": "new"})
+        changed = initial.model_copy(update={"media_version": 2, "approved_media_version": 2})
         with patch.object(self.source, "get", side_effect=[initial, changed]):
             receipt = self.service.submit(request)
         self.assertEqual(receipt.status, "ABORTED")
@@ -601,7 +601,7 @@ class AdapterTests(unittest.TestCase):
 
     def test_metric_quality_changes_distribution_not_guaranteed_rank(self):
         context = TaskContext(task_id="t", account_id="a", status="SCHEDULED", scheduled_at=START,
-                              media_version="v", approved_media_version="v", script_approved=True,
+                              media_version=1, approved_media_version=1, script_approved=True,
                               video_approved=True, qc_passed=True, risk_level="LOW")
         low, high = [], []
         for i in range(1000):

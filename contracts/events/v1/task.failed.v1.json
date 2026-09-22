@@ -1,28 +1,97 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
-  "required": ["event_id", "event_type", "occurred_at", "correlation_id", "idempotency_key", "data"],
+  "required": [
+    "event_id",
+    "event_type",
+    "occurred_at",
+    "correlation_id",
+    "idempotency_key",
+    "data"
+  ],
   "properties": {
-    "event_id": {"type": "string", "minLength": 1},
-    "event_type": {"const": "task.failed.v1"},
-    "occurred_at": {"type": "string", "format": "date-time"},
-    "correlation_id": {"type": "string", "minLength": 1},
-    "idempotency_key": {"type": "string", "minLength": 1},
+    "event_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "event_type": {
+      "const": "task.failed.v1"
+    },
+    "occurred_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "correlation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "idempotency_key": {
+      "type": "string",
+      "minLength": 1
+    },
     "data": {
       "type": "object",
-      "required": ["task_id", "failed_step", "error_code", "retryable", "attempt"],
+      "required": [
+        "task_id",
+        "failed_step",
+        "error_code",
+        "retryable",
+        "attempt"
+      ],
       "properties": {
-        "task_id": {"type": "string", "minLength": 1},
-        "receipt_id": {"type": "string", "minLength": 1},
-        "failed_step": {"type": "string", "minLength": 1},
-        "error_code": {"type": "string", "minLength": 1},
-        "retryable": {"type": "boolean"},
-        "attempt": {"type": "integer", "minimum": 0}
+        "task_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "receipt_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "failed_step": {
+          "type": "string",
+          "minLength": 1
+        },
+        "error_code": {
+          "type": "string",
+          "minLength": 1
+        },
+        "retryable": {
+          "type": "boolean"
+        },
+        "attempt": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "request_key": {
+          "type": "string",
+          "minLength": 1
+        }
       },
-      "allOf": [{
-        "if": {"properties": {"failed_step": {"const": "publishing"}}},
-        "then": {"properties": {"retryable": {"const": false}, "attempt": {"maximum": 2}}}
-      }]
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "failed_step": {
+                "const": "publishing"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "retryable": {
+                "const": false
+              },
+              "attempt": {
+                "maximum": 2
+              }
+            },
+            "required": [
+              "receipt_id",
+              "request_key"
+            ]
+          }
+        }
+      ]
     }
   }
 }

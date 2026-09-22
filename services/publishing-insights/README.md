@@ -34,7 +34,7 @@ python -m publishing
 
 ## 与业务 API 对接
 
-发布器始终从业务 API 获取可信状态，不能通过请求携带 `approved=true` 绕过审批。业务 API 需要实现：
+发布器始终从业务 API 获取可信状态，不能通过请求携带 `approved=true` 绕过审批。业务 API 已实现：
 
 `GET /api/v1/internal/tasks/{task_id}/publishing-context`
 
@@ -46,8 +46,8 @@ python -m publishing
   "account_id": "account-1",
   "status": "SCHEDULED",
   "scheduled_at": "2026-09-22T12:00:00+08:00",
-  "media_version": "media-1",
-  "approved_media_version": "media-1",
+  "media_version": 1,
+  "approved_media_version": 1,
   "script_approved": true,
   "video_approved": true,
   "qc_passed": true,
@@ -113,4 +113,16 @@ python -m publishing
 
 SQLite 事务仅覆盖无外部副作用的模拟器。事务回滚后可能重新计算相同模拟结果，但不会新增逻辑作品、消耗额外已提交尝试或重复回执。替换真实平台适配器时必须增加平台幂等/结果查询对账，不能宣称数据库事务能够回滚外部发布。
 
-真实业务上下文提供方、工作流状态更新和前端尚未在本分支实现。测试证明本模块行为与受控对接，真实联调完成后才可将完整跨模块验收标记通过。
+业务上下文提供方、工作流 HTTP 适配器与最终状态更新已在本分支实现。真实本地 HTTP 联调覆盖首次成功、重试成功、两次失败转 PAUSED、审批撤销、重复投递和确认丢失恢复；前端和部署环境联调仍未完成。
+
+## 启用工作流联调
+
+1. 业务 API 设置 `BUSINESS_API_PUBLISHING_TOKEN`，发布服务的 `BUSINESS_API_TOKEN` 必须与之相同；此凭据仅允许读取发布上下文。
+2. 工作流与业务 API 使用同一个业务数据库文件和各自独立连接，发布服务使用独立的发布数据库。
+3. 工作流设置 `PUBLISHING_SERVICE_URL=http://127.0.0.1:8014` 和与发布服务相同的 `WORKFLOW_PUBLISHING_TOKEN`，运行 `python -m services.workflow --database <业务数据库绝对路径> run`。
+4. 也可运行 `python -m services.workflow --database <业务数据库绝对路径> sync-publishing`，单次拉取结果和投递请求。
+5. 验证命令：`python -I tests/integration/test_publishing_workflow.py`，自动启动真实业务 API 与发布 HTTP 服务，使用真实工作流和模拟发布器。
+
+版本类型统一为正整数，字符串（包括 `"1"`）会被拒绝。此前创建的字符串媒体版本模拟数据库不能直接复用，应保留旧库用于审计，使用新发布数据库重新联调；不要把字符串标识猜测映射为真实业务版本。
+
+最终失败的 `request_key` 等于原请求 `idempotency_key`，`receipt_id` 保持不变，`attempt` 为本模块已调用次数 0–2。工作流不再使用零基尝试序号匹配发布结果。成功与失败 envelope 的幂等键都必须对应当前逻辑发布请求。旧工作流中已排队的发布重试会暂停等待回执核对。

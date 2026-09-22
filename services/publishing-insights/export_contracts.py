@@ -1,4 +1,4 @@
-"""Export consumer routes and the proposed business API context contract."""
+"""Export publishing routes and the implemented business API context contract."""
 import json
 from pathlib import Path
 import tempfile
@@ -23,7 +23,7 @@ def document():
     schema["paths"]["/api/v1/internal/tasks/{task_id}/publishing-context"] = {
         "get": {
             "summary": "Business API: trusted current publishing context",
-            "description": "Provider-owned integration endpoint; business API must implement before live integration.",
+            "description": "Implemented by Business API; requires its dedicated publishing service Bearer credential.",
             "operationId": "get_publishing_context",
             "security": [{"HTTPBearer": []}],
             "parameters": [{"name": "task_id", "in": "path", "required": True,
@@ -33,7 +33,7 @@ def document():
                         "content": {"application/json": {"schema": {"$ref": "#/components/schemas/TaskContext"}}}},
                 "401": {"description": "Missing or invalid service identity"},
                 "404": {"description": "Unknown task"},
-                "503": {"description": "Business state unavailable"},
+                "409": {"description": "Task has no usable scheduled workflow context"},
             },
         }
     }

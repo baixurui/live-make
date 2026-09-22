@@ -142,6 +142,7 @@ class PublishingService:
             data.update(platform_post_id=platform_post_id, published_at=published_at)
         else:
             data.update(failed_step="publishing", error_code=error_code, retryable=False,
+                        request_key=row["idempotency_key"],
                         attempt=attempt if attempt is not None else row["attempt_count"])
         event = {
             "event_id": str(uuid4()),
