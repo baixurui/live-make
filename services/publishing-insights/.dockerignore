@@ -1,0 +1,7 @@
+*
+!Dockerfile
+!pyproject.toml
+!publishing/
+!publishing/**
+**/__pycache__/
+**/*.pyc
