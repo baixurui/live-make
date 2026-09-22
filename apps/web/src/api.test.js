@@ -21,3 +21,23 @@ test("returns demo data when the business API is unavailable", async () => {
   assert.equal(result.source, "demo");
   assert.equal(result.data[0].name, "AI 生产力");
 });
+
+test("reads recommendations and metrics from versioned API endpoints", async () => {
+  const urls = [];
+  const api = createApi(async (url) => {
+    urls.push(url);
+    return { ok: true, json: async () => [] };
+  });
+
+  await api.getRecommendations();
+  await api.getMetrics();
+
+  assert.deepEqual(urls, ["/api/v1/recommendations", "/api/v1/metrics"]);
+});
+
+test("falls back to the demo task when task detail API is unavailable", async () => {
+  const api = createApi(async () => { throw new Error("offline"); });
+  const result = await api.getTask("LM-20260922-01");
+  assert.equal(result.source, "demo");
+  assert.equal(result.data.id, "LM-20260922-01");
+});

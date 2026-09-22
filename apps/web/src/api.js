@@ -1,7 +1,8 @@
 const demo = {
   topics: [{ id: "topic-ai", name: "AI 生产力", enabled: true }, { id: "topic-trends", name: "行业热点", enabled: true }],
   recommendations: [{ id: "rec-low", title: "AI 助手在客服中的新趋势", source: "行业报告 / 官方公告", risk: "LOW" }, { id: "rec-high", title: "敏感行业政策解读", source: "公开政策原文", risk: "HIGH" }],
-  metrics: { published: 18, passRate: "82%", duration: "26 分钟", failed: 2 }
+  metrics: { published: 18, passRate: "82%", duration: "26 分钟", failed: 2 },
+  task: { id: "LM-20260922-01", status: "SCRIPT_PENDING_APPROVAL", risk: "HIGH", scripts: ["效率提升案例", "趋势观察", "风险提示"], evidence: "行业报告", media: "等待生成", quality: "待执行", receipt: "未发布" }
 };
 
 export function createApi(fetcher = fetch) {
@@ -17,7 +18,7 @@ export function createApi(fetcher = fetch) {
     getTopics: () => withFallback("/topics", demo.topics),
     getRecommendations: () => withFallback("/recommendations", demo.recommendations),
     getMetrics: () => withFallback("/metrics", demo.metrics),
-    getTask: (taskId) => request(`/tasks/${taskId}`),
+    getTask: (taskId) => withFallback(`/tasks/${taskId}`, { ...demo.task, id: taskId }),
     approve: (taskId, decision) => request(`/tasks/${taskId}/approvals`, { method: "POST", body: JSON.stringify({ decision }) })
   };
 }
