@@ -1,0 +1,58 @@
+openapi: 3.1.0
+info:
+  title: Live Make MVP API
+  version: 1.0.0
+paths:
+  /api/v1/auth/login:
+    post:
+      summary: Authenticate a pre-created internal account
+      responses:
+        '200':
+          description: Authenticated
+  /api/v1/topics:
+    get:
+      summary: List enabled topics
+      responses:
+        '200':
+          description: Topic list
+    post:
+      summary: Create a topic as an administrator
+      responses:
+        '201':
+          description: Topic created
+  /api/v1/recommendations:
+    get:
+      summary: List daily topic recommendations
+      responses:
+        '200':
+          description: Recommendation list
+  /api/v1/tasks:
+    get:
+      summary: List content tasks
+      responses:
+        '200':
+          description: Task list
+  /api/v1/tasks/{task_id}:
+    get:
+      summary: Get a content task and audit summary
+      responses:
+        '200':
+          description: Task detail
+  /api/v1/tasks/{task_id}/approvals:
+    post:
+      summary: Submit an approval decision
+      responses:
+        '201':
+          description: Approval recorded
+  /api/v1/metrics:
+    get:
+      summary: Get seven-day core metrics
+      responses:
+        '200':
+          description: Metric summary
+  /api/v1/internal/tasks/{task_id}/transitions:
+    post:
+      summary: Apply a workflow-authorized task transition
+      responses:
+        '204':
+          description: Transition applied

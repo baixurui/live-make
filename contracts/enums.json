@@ -1,0 +1,23 @@
+{
+  "risk_levels": ["LOW", "HIGH", "BLOCKED"],
+  "task_statuses": [
+    "DISCOVERED",
+    "TOPIC_SELECTED",
+    "SCRIPT_GENERATING",
+    "SCRIPT_AUTO_REVIEWING",
+    "SCRIPT_PENDING_APPROVAL",
+    "SCRIPT_APPROVED",
+    "SCRIPT_REJECTED",
+    "MEDIA_GENERATING",
+    "MEDIA_QC_RUNNING",
+    "VIDEO_PENDING_APPROVAL",
+    "VIDEO_APPROVED",
+    "VIDEO_REJECTED",
+    "SCHEDULED",
+    "PUBLISHING",
+    "PUBLISHED",
+    "PAUSED",
+    "FAILED",
+    "CANCELLED"
+  ]
+}
