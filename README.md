@@ -21,3 +21,16 @@
 ```powershell
 python -m unittest tests/contracts/test_shared_contracts.py -v
 ```
+
+## Frontend console
+
+The MVP console is in `apps/web`. It uses the `/api/v1` business API boundary only; when the API is not deployed, it presents local demonstration data and does not connect to search, LLM, media, or publishing providers.
+
+```powershell
+cd apps/web
+npm test
+npm run build
+npm run dev
+```
+
+Open `http://localhost:5173`. The task detail page demonstrates that a HIGH-risk task remains unschedulable until two different accounts approve it.
