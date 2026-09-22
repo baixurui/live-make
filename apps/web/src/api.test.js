@@ -109,6 +109,22 @@ test("creates a content task from a selected recommendation", async () => {
   assert.equal(requests[0].options.body, JSON.stringify({ title: "AI 助手在客服中的新趋势", topic_id: "topic-1", risk_level: "LOW" }));
 });
 
+test("manages internal accounts through administrator endpoints", async () => {
+  const requests = [];
+  const api = createApi(async (url, options) => {
+    requests.push({ url, options });
+    return { ok: true, json: async () => ({ id: "account-1" }) };
+  });
+
+  await api.createAccount("reviewer", "safe-password", false);
+  await api.updateAccount("account-1", { enabled: false });
+
+  assert.equal(requests[0].url, "/api/v1/admin/accounts");
+  assert.equal(requests[0].options.body, JSON.stringify({ username: "reviewer", password: "safe-password", is_admin: false }));
+  assert.equal(requests[1].url, "/api/v1/admin/accounts/account-1");
+  assert.equal(requests[1].options.method, "PATCH");
+});
+
 test("returns a demo approval when the approval API is unavailable", async () => {
   const api = createApi(async () => { throw new Error("offline"); });
   const result = await api.approve("task-1", "SCRIPT", "APPROVED");

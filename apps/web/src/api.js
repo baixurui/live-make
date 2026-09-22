@@ -20,6 +20,8 @@ export function createApi(fetcher = fetch) {
     updateTopic: (topicId, changes) => request(`/topics/${topicId}`, { method: "PATCH", body: JSON.stringify(changes) }),
     getRecommendations: () => withFallback("/recommendations", demo.recommendations),
     createTask: (title, topicId, riskLevel = "LOW") => request("/tasks", { method: "POST", body: JSON.stringify({ title, topic_id: topicId, risk_level: riskLevel }) }),
+    createAccount: (username, password, isAdmin = false) => request("/admin/accounts", { method: "POST", body: JSON.stringify({ username, password, is_admin: isAdmin }) }),
+    updateAccount: (accountId, changes) => request(`/admin/accounts/${accountId}`, { method: "PATCH", body: JSON.stringify(changes) }),
     getMetrics: () => withFallback("/metrics", demo.metrics),
     getTask: (taskId) => withFallback(`/tasks/${taskId}`, { ...demo.task, id: taskId }),
     async approve(taskId, kind, decision, comment = "") {
