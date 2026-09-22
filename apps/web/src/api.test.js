@@ -56,6 +56,19 @@ test("reads recommendations and metrics from versioned API endpoints", async () 
   assert.deepEqual(urls, ["/api/v1/recommendations", "/api/v1/metrics"]);
 });
 
+test("reads the authenticated task list from the business API", async () => {
+  const urls = [];
+  const api = createApi(async (url) => {
+    urls.push(url);
+    return { ok: true, json: async () => [{ id: "task-1" }] };
+  });
+
+  const result = await api.getTasks();
+
+  assert.deepEqual(urls, ["/api/v1/tasks"]);
+  assert.equal(result.data[0].id, "task-1");
+});
+
 test("falls back to the demo task when task detail API is unavailable", async () => {
   const api = createApi(async () => { throw new Error("offline"); });
   const result = await api.getTask("LM-20260922-01");
