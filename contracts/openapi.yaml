@@ -43,6 +43,181 @@ components:
         target_status: {type: string}
         reason: {type: string}
 paths:
+  /api/v1/studio/tasks/{task_id}/ai/{action}:
+    parameters:
+      - {in: path, name: task_id, required: true, schema: {type: string}}
+      - {in: path, name: action, required: true, schema: {type: string, enum: [text, image, video, resume, acknowledge]}}
+    post:
+      summary: Confirm one Bailian stage or resume an existing remote task without resubmitting
+      description: Server-side Beijing API key required. Text needs topic; image needs prompt; video needs prompt, latest image_id and duration. New calls require confirmed true. Resume needs a WAITING job_id. Acknowledge requires administrator and explicit confirmation after checking UNKNOWN submission in provider console. GET studio task includes ai.jobs and ai.images. Status values are QUEUED, SUBMITTING, RUNNING, SUCCEEDED, FAILED, WAITING, UNKNOWN, ACKNOWLEDGED.
+      security: [{bearerAuth: []}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                confirmed: {type: boolean}
+                topic: {type: string, minLength: 1, maxLength: 1000}
+                prompt: {type: string, minLength: 1, maxLength: 1000, description: Image prompt maximum is 800 characters}
+                image_id: {type: string}
+                duration: {type: integer, minimum: 7, maximum: 15, default: 8}
+                job_id: {type: string}
+      responses:
+        '200': {description: Local job id/status or acknowledgment; does not mean generation finished}
+        '400': {description: Missing configuration/confirmation, busy task, invalid source or input}
+        '403': {description: Authentication or administrator required}
+  /api/v1/studio/images/{image_id}:
+    parameters:
+      - {in: path, name: image_id, required: true, schema: {type: string}}
+    get:
+      summary: Authenticated local PNG first frame, never a provider temporary URL
+      security: [{bearerAuth: []}]
+      parameters:
+        - {in: query, name: download, schema: {type: integer, enum: [1]}}
+      responses:
+        '200': {description: PNG image}
+        '403': {description: Login required}
+        '404': {description: Image missing}
+  /api/v1/auth/me:
+    get:
+      summary: Get current account using bearer token or HttpOnly session cookie
+      security: [{bearerAuth: []}]
+      responses:
+        '200': {description: Current account without secrets}
+        '403': {description: Missing or expired session}
+  /api/v1/auth/logout:
+    post:
+      summary: Revoke current session and clear cookie
+      security: [{bearerAuth: []}]
+      responses:
+        '204': {description: Logged out}
+  /api/v1/studio/capabilities:
+    get:
+      summary: Template engine and current operator Douyin configuration status without secrets
+      security: [{bearerAuth: []}]
+      responses:
+        '200': {description: generation mode/available, upload_limit_mb, douyin configured/connected/expires_at}
+  /api/v1/studio/tasks/{task_id}:
+    parameters:
+      - {in: path, name: task_id, required: true, schema: {type: string}}
+    get:
+      summary: Persistent media versions, processing jobs and publication records
+      security: [{bearerAuth: []}]
+      responses:
+        '200': {description: 'media, jobs and publications arrays; platform acceptance is SUBMITTED, not PUBLISHED'}
+  /api/v1/studio/tasks/{task_id}/upload:
+    parameters:
+      - {in: path, name: task_id, required: true, schema: {type: string}}
+    post:
+      summary: Upload raw video bytes and queue validated MP4 conversion
+      description: MP4/MOV/WebM up to 100 MiB. Cookie-authenticated writes require X-Studio-Request 1 and same-origin Origin. Managed workflow tasks are rejected.
+      security: [{bearerAuth: []}]
+      parameters:
+        - {in: header, name: X-Filename, required: true, schema: {type: string}, description: Percent-encoded original filename}
+      requestBody:
+        required: true
+        content:
+          application/octet-stream:
+            schema: {type: string, format: binary}
+      responses:
+        '202': {description: 'Queued job: id and status'}
+        '400': {description: Invalid file or task locked}
+        '413': {description: Upload exceeds 100 MiB}
+  /api/v1/studio/tasks/{task_id}/generate:
+    parameters:
+      - {in: path, name: task_id, required: true, schema: {type: string}}
+    post:
+      summary: Queue real template video rendering, not AI video generation
+      security: [{bearerAuth: []}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [text, duration]
+              properties:
+                text: {type: string, minLength: 1, maxLength: 100}
+                duration: {type: integer, minimum: 7, maximum: 15}
+                background_id: {type: [string, 'null']}
+      responses:
+        '200': {description: Queued job id/status; query task details for completion}
+        '400': {description: Invalid input or task locked}
+  /api/v1/studio/tasks/{task_id}/review:
+    parameters:
+      - {in: path, name: task_id, required: true, schema: {type: string}}
+    post:
+      summary: Approve latest local video and exact publication caption
+      security: [{bearerAuth: []}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [media_id, caption]
+              properties:
+                media_id: {type: string}
+                caption: {type: string, minLength: 1, maxLength: 100}
+      responses:
+        '200': {description: reviewers count and required count; HIGH requires two distinct active accounts}
+        '400': {description: Stale media or unavailable task}
+  /api/v1/studio/tasks/{task_id}/publish:
+    parameters:
+      - {in: path, name: task_id, required: true, schema: {type: string}}
+    post:
+      summary: Administrator-confirmed real Douyin submission of reviewed latest media
+      description: One submission per Douyin account per Beijing date. Unknown outcomes reserve the slot. No automatic retry. This manual path does not mutate automatic workflow state.
+      security: [{bearerAuth: []}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [media_id, caption, confirmed]
+              properties:
+                media_id: {type: string}
+                caption: {type: string, minLength: 1, maxLength: 100}
+                confirmed: {type: boolean, const: true}
+                visibility: {type: string, enum: [private, public], default: private}
+      responses:
+        '200': {description: Publication id with SUBMITTING status, not proof of public visibility}
+        '400': {description: Missing configuration/authorization/review or daily slot used}
+        '403': {description: Administrator required}
+  /api/v1/studio/media/{media_id}:
+    parameters:
+      - {in: path, name: media_id, required: true, schema: {type: string}}
+    get:
+      summary: Authenticated MP4 playback and download with single byte-range support
+      security: [{bearerAuth: []}]
+      parameters:
+        - {in: header, name: Range, schema: {type: string}}
+        - {in: query, name: download, schema: {type: integer, enum: [1]}}
+      responses:
+        '200': {description: Full MP4}
+        '206': {description: Requested byte range}
+        '403': {description: Authentication required}
+        '416': {description: Invalid or unsatisfiable range}
+  /api/v1/studio/douyin/authorize:
+    post:
+      summary: Create one-time OAuth state and return official authorization URL
+      security: [{bearerAuth: []}]
+      responses:
+        '200': {description: URL for administrator to authorize the configured application}
+        '400': {description: Application not configured or HTTPS redirect invalid}
+  /api/v1/studio/douyin/callback:
+    get:
+      summary: Validate one-time state and exchange code server-side
+      security: [{bearerAuth: []}]
+      parameters:
+        - {in: query, name: state, required: true, schema: {type: string}}
+        - {in: query, name: code, required: true, schema: {type: string}}
+      responses:
+        '303': {description: Redirect to local workbench after authorization}
+        '400': {description: Invalid state or missing code}
   /api/v1/auth/login:
     post:
       summary: Authenticate a pre-created internal account

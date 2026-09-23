@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Live Make · 固定虚构人物讲知识</title>
+<style>
+:root{--paper:#f7f5ee;--ink:#203b35;--muted:#5f7069;--green:#216653;--mint:#e4efe6;--orange:#a94a27;--peach:#fff0e4;--line:#d8dfd4;--white:#fffef9}
+*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:92px}body{margin:0;background:var(--paper);color:var(--ink);font-family:"Microsoft YaHei","PingFang SC",system-ui,sans-serif;line-height:1.8}main{max-width:1120px;margin:auto;padding:40px 28px 80px}header{padding:34px 0 46px}.eyebrow{font-size:13px;letter-spacing:.15em;color:var(--green);font-weight:700}h1{font-size:clamp(36px,6vw,70px);line-height:1.2;letter-spacing:-.04em;margin:20px 0}h2{font-size:clamp(26px,4vw,36px);line-height:1.4;margin:10px 0 16px}h3{font-size:19px;margin:5px 0 9px}p{margin:8px 0 14px}.lead{font-size:21px;max-width:790px;color:var(--muted)}.status{display:inline-block;padding:4px 12px;background:var(--mint);border-radius:100px;font-size:13px;font-weight:700}.nav{position:sticky;top:0;z-index:5;background:rgba(247,245,238,.97);border-block:1px solid var(--line);display:flex;gap:8px;flex-wrap:wrap;padding:10px 0}.nav a{color:var(--ink);text-decoration:none;font-size:14px;padding:5px 10px;border-radius:20px}.nav a:hover,.nav a:focus-visible{background:var(--mint)}section{padding:48px 0;border-bottom:1px solid var(--line)}.kicker{font-size:13px;color:var(--green);font-weight:800;letter-spacing:.1em}.grid{display:grid;gap:16px}.three{grid-template-columns:repeat(3,minmax(0,1fr))}.four{grid-template-columns:repeat(4,minmax(0,1fr))}.two{grid-template-columns:repeat(2,minmax(0,1fr))}.card{background:var(--white);border:1px solid var(--line);border-radius:20px;padding:24px}.icon{font-size:35px;display:block;margin-bottom:8px}.small{font-size:14px;color:var(--muted)}.callout{background:var(--mint);border-left:4px solid var(--green);padding:18px 22px;border-radius:0 14px 14px 0;margin:22px 0}.warn{background:var(--peach);border-left-color:var(--orange)}.big{font-size:44px;font-weight:800;line-height:1.3;color:var(--green)}.tag{font-size:12px;background:var(--mint);padding:3px 9px;border-radius:20px;display:inline-block}.pending{color:var(--orange);background:var(--peach)}.diagram{background:var(--white);border:1px solid var(--line);padding:24px;border-radius:24px;margin:24px 0}.diagram svg{display:block;width:100%;height:auto}.caption{text-align:center;color:var(--muted);font-size:14px;margin-top:10px}details{margin-top:16px;border:1px solid var(--line);background:var(--white);border-radius:14px;padding:0 20px}summary{cursor:pointer;padding:15px 0;font-weight:700}details[open]{padding-bottom:18px}details p,details li{font-size:15px}ul,ol{padding-left:24px}li{margin:7px 0}.steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;counter-reset:step}.step{border-radius:16px;padding:18px;background:var(--white);border:1px solid var(--line)}.step:before{counter-increment:step;content:counter(step,decimal-leading-zero);display:block;color:var(--green);font-size:24px;font-weight:800}.step strong{display:block}.step span{font-size:14px;color:var(--muted)}.human{background:var(--peach);border-color:#e9cbb5}.table-wrap{overflow:auto}table{border-collapse:collapse;width:100%;font-size:15px;margin:16px 0}th,td{text-align:left;vertical-align:top;border-bottom:1px solid var(--line);padding:13px 12px}th{background:var(--mint);white-space:nowrap}.flow{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap}.flow .box{padding:16px 20px;background:var(--mint);border-radius:14px;text-align:center}.arrow{font-size:25px;color:var(--green)}.tickets{display:flex;gap:12px;justify-content:center;margin:16px 0}.ticket{border:2px dashed var(--green);border-radius:12px;background:var(--mint);padding:14px 20px;font-size:26px;font-weight:bold}.memory{border-top:5px solid var(--green)}.memory:nth-child(2){border-top-color:#bf914b}.memory:nth-child(3){border-top-color:#6980a4}.footer{font-size:14px;color:var(--muted);padding-top:24px}a{color:var(--green)}button{font:inherit;border:1px solid var(--line);background:var(--white);color:var(--green);border-radius:30px;padding:8px 15px;cursor:pointer;margin-top:16px}button:hover{background:var(--mint)}:focus-visible{outline:3px solid #b46d34;outline-offset:4px}.sr-only{position:absolute;width:1px;height:1px;padding:0;overflow:hidden;clip:rect(0,0,0,0)}
+@media(max-width:700px){main{padding:20px 16px 50px}.three,.four,.two{grid-template-columns:1fr}.steps{grid-template-columns:repeat(2,minmax(0,1fr))}.card{padding:20px}.diagram{padding:10px}.nav{gap:0}.nav a{font-size:12px;padding:5px 8px}section{padding:34px 0}.lead{font-size:18px}.ticket{padding:10px 18px}html{scroll-padding-top:115px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+@media print{.nav,button{display:none}body{background:white}main{max-width:none;padding:0}section{padding:20px 0}.card,details{break-inside:avoid}h2,h3{break-after:avoid}.three{grid-template-columns:repeat(3,1fr)}a{color:inherit}.diagram{break-inside:avoid}}
+</style>
+</head>
+<body><main>
+<header>
+<div class="eyebrow">LIVE MAKE / 文档大白话图解 / 2026.09.23</div>
+<h1>同一位虚构讲解者。<br>把不同知识讲清楚。</h1>
+<p class="lead">你提供需求和知识资料，一个主管带四位 AI 助手，制作固定虚构人物出镜的知识视频。她自然说话、点头、做手势；关键决定还是你来做。</p>
+<span class="status">这是已讨论的目标设计，不是功能验收报告</span>
+<div><button id="expand" type="button">展开全部详细解释</button> <button id="collapse" type="button">收起全部详细解释</button></div>
+</header>
+<nav class="nav" aria-label="章节导航"><a href="#business">01 做什么</a><a href="#architecture">02 怎么搭</a><a href="#data">03 怎么流转</a><a href="#agents">04 谁负责</a><a href="#skills">05 工作手册</a><a href="#mcp">06 工具箱</a><a href="#metrics">07 怎么打分</a><a href="#recap">最后记住</a></nav>
+<section id="business">
+<div class="kicker">01 / 项目背景</div><h2>不是拿商品演示，而是自然地讲知识</h2>
+<div class="grid three">
+<article class="card"><span class="icon" aria-hidden="true">👩</span><span class="tag">已确认 · 固定人物</span><h3>写实的虚构成年女性</h3><p>美丽、性感、成熟，不复刻真人。不同视频沿用同一个人物。</p></article>
+<article class="card"><span class="icon" aria-hidden="true">🎙️</span><span class="tag">已确认 · 声音方向</span><h3>成熟、温暖、清晰</h3><p>自然女声，语速适中、有亲切感，不刻意使用气声，不模仿真人。</p></article>
+<article class="card"><span class="icon" aria-hidden="true">💬</span><span class="tag">已确认 · 自然表现</span><h3>边讲解，边自然表达</h3><p>配合表情、点头和手势。不要求拿物品或定时精准指向。</p></article>
+</div>
+<div class="callout"><strong>每条视频讲不同知识，观众看到同一位讲解者。</strong>按需加入字幕、图片或示意图，不是每条都必须有。具体年龄、发型、服装、背景、实际音色和模型尚未定稿。</div>
+<p>既有定位仍服务企业里的编辑、策划、运营、制作与审核人员，偏 <strong>TOB 企业使用场景</strong>。这次明确的是视频形态，不据此擅自改成 TOC。</p>
+<details><summary>展开：原来三家公司的案例，保留为参考场景</summary>
+<div class="grid three">
+<article class="card"><span class="icon" aria-hidden="true">📰</span><h3>讲清楚一条资讯</h3><p>把公告、资料变成科技短视频。</p><span class="tag">参考场景：36氪</span><p class="small">最重要：事实准确、能找到出处。</p></article>
+<article class="card"><span class="icon" aria-hidden="true">🤝</span><h3>给客户交付内容</h3><p>把客户要求变成品牌活动视频。</p><span class="tag">参考场景：新榜</span><p class="small">最重要：符合需求、改的是同一个版本。</p></article>
+<article class="card"><span class="icon" aria-hidden="true">🎁</span><h3>介绍一件商品</h3><p>把商品资料和图片变成营销视频。</p><span class="tag">参考场景：三只松鼠</span><p class="small">最重要：包装、属性、卖点不能编。</p></article>
+</div>
+<p class="small">这三家公司不是本项目客户，以下仅是参考与扩展场景，不再作为默认制作要求；共用一套团队，不建三套系统。</p>
+</details>
+<div class="flow" aria-label="人工流程"><div class="box">问需求</div><span class="arrow" aria-hidden="true">→</span><div class="box">找资料</div><span class="arrow" aria-hidden="true">→</span><div class="box">写稿与分镜</div><span class="arrow" aria-hidden="true">→</span><div class="box">制作与检查</div><span class="arrow" aria-hidden="true">→</span><div class="box">审批、交付与发布</div></div>
+<div class="callout"><strong>产品价值：</strong>让 AI 和工具承担重复工作，让人少搬资料、少反复沟通，并能查清“谁根据什么做了哪个版本”。不是承诺自动做出爆款。</div>
+<details><summary>展开：它不是什么？效果现在能保证吗？</summary><p>当前没有默认建设对外收费、多客户独立登录的 SaaS。企业内部使用，不等于已经做成对外商业化产品。</p><p>客户内容场景中，内部审核通过也不自动等于客户验收通过。目前有目标，但没有实测效果，不能声称已经省了多少钱、增加了多少销量或播放量。</p></details>
+</section>
+<section id="architecture">
+<div class="kicker">02 / 架构</div><h2>先看懂：人、团队、手册、工具和档案</h2>
+<div class="diagram">
+<svg viewBox="0 0 960 720" role="img" aria-labelledby="arch-title arch-desc" xmlns="http://www.w3.org/2000/svg">
+<title id="arch-title">Live Make 的目标架构：用户与主管沟通，主管协调四个专业 Agent</title><desc id="arch-desc">工作台连接主管与资料、脚本、媒体、审查四个子 Agent。媒体复用固定人物与声音设定，制作说话视频；审查知识和人物表现。Skills、上下文与记忆提供支持，执行层校验后调用工具，发布另需确认。</desc>
+<defs><marker id="arrowhead" markerWidth="10" markerHeight="10" refX="7" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#739184"/></marker></defs>
+<g font-family="Microsoft YaHei,system-ui,sans-serif" text-anchor="middle">
+<rect x="230" y="14" width="500" height="70" rx="18" fill="#fff0e4"/><text x="480" y="45" font-size="23" fill="#203b35" font-weight="700">你 · 人机交互工作台</text><text x="480" y="69" font-size="16" fill="#5f7069">提需求 / 看进度 / 预览 / 批准</text>
+<path d="M480 86 V112" stroke="#739184" stroke-width="3" marker-end="url(#arrowhead)"/>
+<rect x="20" y="120" width="920" height="273" rx="24" fill="#e4efe6"/><text x="155" y="151" font-size="17" fill="#216653">DeepAgents 团队执行层</text>
+<rect x="305" y="160" width="350" height="80" rx="18" fill="#216653"/><text x="480" y="195" font-size="27" fill="white" font-weight="700">主管 Agent</text><text x="480" y="222" font-size="17" fill="white">判断下一步 · 派活 · 验收 · 找你确认</text>
+<path d="M480 240 V265 M135 290 V265 H825 V290 M365 265 V290 M595 265 V290" fill="none" stroke="#739184" stroke-width="3"/>
+<rect x="45" y="290" width="180" height="78" rx="16" fill="#fffef9"/><text x="135" y="323" font-size="24" fill="#203b35">资料 Agent</text><text x="135" y="349" font-size="17" fill="#5f7069">核查知识依据</text>
+<rect x="275" y="290" width="180" height="78" rx="16" fill="#fffef9"/><text x="365" y="323" font-size="24" fill="#203b35">脚本 Agent</text><text x="365" y="349" font-size="17" fill="#5f7069">台词通俗易懂</text>
+<rect x="505" y="290" width="180" height="78" rx="16" fill="#fffef9"/><text x="595" y="323" font-size="24" fill="#203b35">媒体 Agent</text><text x="595" y="349" font-size="17" fill="#5f7069">人物说话与制作</text>
+<rect x="735" y="290" width="180" height="78" rx="16" fill="#fffef9"/><text x="825" y="323" font-size="24" fill="#203b35">审查 Agent</text><text x="825" y="349" font-size="17" fill="#5f7069">知识与声画检查</text>
+<path d="M480 395 V422" stroke="#739184" stroke-width="3" marker-end="url(#arrowhead)"/>
+<rect x="25" y="430" width="280" height="78" rx="16" fill="#f0eee5"/><text x="165" y="462" font-size="22" fill="#203b35">Skills = 工作手册</text><text x="165" y="490" font-size="17" fill="#5f7069">七套专业做法</text>
+<rect x="340" y="430" width="280" height="78" rx="16" fill="#f0eee5"/><text x="480" y="462" font-size="22" fill="#203b35">上下文 = 桌上资料</text><text x="480" y="490" font-size="17" fill="#5f7069">只拿这次需要的</text>
+<rect x="655" y="430" width="280" height="78" rx="16" fill="#f0eee5"/><text x="795" y="462" font-size="22" fill="#203b35">记忆 = 分类档案</text><text x="795" y="490" font-size="17" fill="#5f7069">短期 / 中期 / 长期</text>
+<rect x="120" y="535" width="720" height="58" rx="16" fill="#fff0e4"/><text x="480" y="571" font-size="22" fill="#a94a27">受控执行层：先查权限、批准版本、额度、重复操作</text>
+<path d="M480 595 V625" stroke="#739184" stroke-width="3" marker-end="url(#arrowhead)"/>
+<rect x="120" y="633" width="720" height="68" rx="16" fill="#216653"/><text x="480" y="664" font-size="24" fill="white">MCP 工具 + 数据与文件存储</text><text x="480" y="690" font-size="16" fill="white">查知识 · 人物说话 · 合成 · 检测 · 保存版本</text>
+</g></svg><p class="caption">简化关系图：手册、资料、记忆是支撑能力，不是三个先后执行步骤。仍是 5 个 Agent、7 个 Skills、4 组创作 MCP。</p></div>
+<div class="diagram"><span class="tag pending">建议验证的制作路线 · 未选定模型</span><h3>让同一位人物自然开口</h3><div class="flow"><div class="box">人物参考形象<br>＋讲解音频</div><span class="arrow" aria-hidden="true">→</span><div class="box">人物说话与自然动作<br>生成能力</div><span class="arrow" aria-hidden="true">→</span><div class="box">人物片段<br>＋按需辅助画面</div></div><p class="caption">先定效果要求，再验证工具。不是只有配音就够了，也不是已经决定必须加一个独立嘴型模型。</p></div>
+<div class="grid three"><div class="card"><h3>DeepAgents</h3><p>本项目拟用来运行和组织这支 AI 团队的框架。</p></div><div class="card"><h3>多模态</h3><p>不只看文字，也处理图片、声音和视频。</p></div><div class="card"><h3>受控执行层</h3><p>像门卫。主管想做，不代表现在就被允许做。</p></div></div>
+<div class="callout"><strong>自主，不等于随意。</strong>主管可以决定先补资料还是先问你；但没批脚本不能制作，没批成片不能正式交付，没确认发布不能代发。</div>
+<details><summary>展开：为什么不是固定流水线，也不是完全放任？</summary><p>固定的是目标与依赖：先有可信依据，才能写有依据的脚本；批准脚本后制作；成片预览审批后交付。可变的是调度：资料充分就不强行联网，字幕有错就局部修字幕，不一定从资料重新来。</p><p>框架和业务工作流不能同时启动同一项制作。主管提出动作，业务系统核验条件并保存正式结果，避免重复渲染或重复扣费。</p></details>
+</section>
+<section id="data">
+<div class="kicker">03 / 数据流 + 记忆</div><h2>像传一份“带版本号的作业”</h2>
+<p>数据流不是看谁在聊天，而是看：<strong>这一站拿到什么，做出什么，下一站用哪个版本。</strong></p>
+<div class="steps"><div class="step"><strong>你提需求</strong><span>要求＋资料＋素材</span></div><div class="step"><strong>主管整理任务</strong><span>目标、限制、待确认项</span></div><div class="step"><strong>资料员整理事实</strong><span>可信事实＋来源＋缺口</span></div><div class="step"><strong>编剧写讲解稿</strong><span>口语化台词＋镜头表＋版本</span></div><div class="step"><strong>审查员检查脚本</strong><span>问题位置＋证据＋建议</span></div><div class="step human"><strong>你批准脚本</strong><span>批准具体版本，才进入制作</span></div><div class="step"><strong>制作人物讲解视频</strong><span>人物参考＋音频版本 → 人物片段 → 检查与合成</span></div><div class="step"><strong>审查员检查成片</strong><span>知识、口型、人物、声音和自然度</span></div><div class="step human"><strong>你看预览并审批</strong><span>不满意则在额度内修改</span></div><div class="step"><strong>正式交付</strong><span>交付你刚批准的同一版本</span></div><div class="step human"><strong>你选发布方式</strong><span>手动；或单独确认系统代发</span></div><div class="step"><strong>核实公开与表现</strong><span>回执、状态、可获取的数据</span></div></div>
+<p class="small">图示表达产物依赖，不要求主管每次死板地执行一串相同调用。只有没有未满足依赖的工作才可并行。</p>
+<div class="callout warn"><strong>新视频不能借旧视频的“批准章”。</strong>你批准 v1，系统改成 v2 后必须让你重新看、重新批。AI 说“检查通过”也不是你的正式批准。</div>
+<details><summary>展开：用一条知识讲解视频举例，看懂“交接规则”</summary><ol><li>你说：“根据这份知识资料，让固定虚构人物用通俗语言讲清一个知识点，自然点头和做手势，不编造结论。”这是例子，不指定实际知识领域或时长。</li><li>资料 Agent 把能用的事实整理出来，给出原始出处，不把“看起来好像是”当作事实。</li><li>脚本 Agent 写出脚本 v1；主管组织审查并请你批准。媒体 Agent 必须拿已批准的具体版本制作，关联人物参考、声音设定和实际台词音频版本。</li><li>审查发现第 6 秒字幕与实际台词不同，报告具体时间和证据；主管检查额度，再安排局部修复。</li><li>你看修订成片并批准，系统保存人、时间、决定及关联版本，最后交付同一成片。</li></ol><p>所有子 Agent 向主管交接；任务单说明目标、依据、限制和产物。结果先保存，再汇报引用。没做完就说没做完，不随意跨项目读取资料。</p></details>
+<div class="callout"><strong>这段视频是谁、说了什么，用的是哪份声音？</strong>每段人物视频关联人物参考版本、声音设定、实际音频、批准脚本与镜头。台词改了不能只改字幕；声音改了，要重新检查口型、时序与时长。新成片仍需审批。</div>
+<details><summary>展开：建议增加“人物档案”，但不新增数据库</summary><p>记录人物标识、参考素材、声音设定、适用账号或项目范围与版本。首次建立人物和之后复用分开处理，不是每个镜头重新挑一张脸。</p><p>这份记录属于现有项目与素材管理。已确认且可复用的人物要求按长期记忆规则保存；具体文件、版本和审批以业务记录为准，不能仅凭记忆摘要选人物。</p><p><strong>待定：</strong>具体字段、人物预览是否需要独立审批、实际固定音色与绑定方式。固定人物不等于服装和背景永远不能变化，也不能跨账号越权使用。</p></details>
+<h3>三层记忆，就像三种笔记本</h3>
+<div class="grid three"><article class="card memory"><span class="icon" aria-hidden="true">📝</span><span class="tag">短期 · Redis</span><h3>今天的便签</h3><p>这次工作做到哪一步，哪个任务还在等结果。</p><p class="small">等待你审批时不能随便过期丢失。</p></article><article class="card memory"><span class="icon" aria-hidden="true">📒</span><span class="tag">中期 · PostgreSQL</span><h3>这个项目的工作本</h3><p>需求、改过什么、决定过什么、还有哪些待办。</p><p class="small">隔天回来，也能继续同一项目。</p></article><article class="card memory"><span class="icon" aria-hidden="true">📚</span><span class="tag">长期 · 原文＋向量检索</span><h3>以后还能用的资料库</h3><p>确认过的品牌规范、稳定偏好和经验。</p><p class="small">PostgreSQL 原文＋Embedding＋Milvus。</p></article></div>
+<div class="flow" style="margin-top:22px"><div class="box">原文<br><small>PostgreSQL</small></div><span class="arrow" aria-hidden="true">→</span><div class="box">转成便于找相似内容的数字<br><small>Embedding</small></div><span class="arrow" aria-hidden="true">→</span><div class="box">按意思找相关内容<br><small>Milvus</small></div></div>
+<p class="small">图片、声音、视频本体放文件仓库；数据库记它是谁的、哪个版本、存在哪里。Embedding 是转换过程，不是另一种记忆时长。</p>
+<details><summary>展开：记忆与上下文究竟有什么区别？</summary><p><strong>记忆是资料柜；上下文是这次摆到桌上的资料。</strong>不能把整柜文件全倒给每一个 Agent。先检查权限和项目范围，再挑相关内容。</p><p>长期检索不是“找到了就照做”：Milvus 找相似内容，仍要回 PostgreSQL 查原文、确认状态、版本与有效性。强制品牌规则必须直接读取，不能指望相似搜索碰巧命中。</p><p>你说“以后都用白色字幕”，可以按明确范围长期记住并反馈。你说“只有这一条别写价格”，不能自动改成永远不写价格。AI 自己猜出的偏好，要先让你确认。</p><p>资料不会放久了就自动变成长期记忆。过期规则停止使用；删除还要处理原文、向量、缓存及备份保留策略。正式审批和额度是业务记录，不能只存在一段 AI 摘要里。</p></details>
+</section>
+<section id="agents">
+<div class="kicker">04 / A2A 与角色职责</div><h2>一个主管，四个专业助手</h2>
+<div class="card" style="background:var(--mint);margin-bottom:16px"><span class="tag">主管 Agent · 6 类职责</span><h3>像项目经理，不是万能员工</h3><p>理解需求 → 规划任务 → 分配工作 → 验收结果 → 处理异常 → 统一汇报。</p></div>
+<div class="grid four"><article class="card"><span class="icon" aria-hidden="true">🔎</span><h3>资料 Agent</h3><span class="tag">3 类职责</span><p>整理知识资料<br>核查知识依据<br>报告缺口</p></article><article class="card"><span class="icon" aria-hidden="true">✍️</span><h3>脚本 Agent</h3><span class="tag">3 类职责</span><p>把知识讲明白<br>安排台词与镜头<br>依据反馈改稿</p></article><article class="card"><span class="icon" aria-hidden="true">🎬</span><h3>媒体 Agent</h3><span class="tag">3 类职责</span><p>复用人物与声音设定<br>制作说话视频<br>局部修复自检</p></article><article class="card"><span class="icon" aria-hidden="true">🔍</span><h3>审查 Agent</h3><span class="tag">2 类职责</span><p>审知识与脚本<br>审人物与声画<br><small>不代替你批准</small></p></article></div>
+<div class="callout"><strong>这里的 A2A，就是 AI 同事之间协作。</strong>主管派活，助手交回结果。目标采用 DeepAgents 内部委派；这不等于已经接入名为 A2A 的标准通信协议。</div>
+<details><summary>展开：这是不是五台服务器？有没有运营 Agent？</summary><p>不是。五个角色不等于五台机器；每个任务有隔离的上下文，也不是全公司共用一个聊天记录。子 Agent 不自由互相派活或无限递归扩建团队。</p><p>当前确认的就是五个角色，没有额外运营 Agent。发布作为单独受控能力，具体模块归属尚待确定，不能为了发布就声称第六个 Agent 已经建好。</p></details>
+</section>
+<section id="skills">
+<div class="kicker">05 / SKILLS 与 SOP</div><h2>七本工作手册，不是七个新员工</h2>
+<p><strong>Skill = 一套可复用的专业方法；SOP = 里面具体怎么做。</strong>每本都写清输入、步骤、交付物、完成标准和出错后怎么办。</p>
+<div class="table-wrap"><table><caption class="sr-only">七个 Skill 对照人工岗位、步骤与交付物</caption><thead><tr><th>手册 / 谁用</th><th>像人一样怎样做</th><th>交什么</th></tr></thead><tbody>
+<tr><td>① 创作需求澄清<br><small>主管</small></td><td>读需求 → 确认受众与限制 → 问清关键缺口</td><td>需求单</td></tr>
+<tr><td>② 资料整理与事实核查<br><small>资料 Agent</small></td><td>读资料 → 找依据 → 查冲突 → 必要时补证</td><td>事实包＋来源</td></tr>
+<tr><td>③ 视频文案与镜头设计<br><small>脚本 Agent</small></td><td>核知识 → 通俗讲解与举例 → 安排节奏镜头 → 自查</td><td>脚本＋镜头表</td></tr>
+<tr><td>④ 媒体制作方案设计<br><small>媒体 Agent</small></td><td>读批准脚本 → 复用人物参考 → 定声音与辅助画面</td><td>制作清单</td></tr>
+<tr><td>⑤ 视频合成与局部修复<br><small>媒体 Agent</small></td><td>准备音频 → 制作人物片段 → 筛查与合成 → 修复</td><td>音频＋人物片段＋成片版本</td></tr>
+<tr><td>⑥ 脚本审查<br><small>审查 Agent</small></td><td>对需求 → 核事实 → 看能否制作 → 指出问题</td><td>绑定版本的问题报告</td></tr>
+<tr><td>⑦ 成片审查<br><small>审查 Agent</small></td><td>核台词与知识 → 查口型、人物与声音一致性 → 看自然度</td><td>带位置和证据的报告</td></tr>
+</tbody></table></div>
+<div class="callout"><strong>分镜就是：“几秒到几秒，看什么、听什么、屏幕写什么。”</strong>不要求你会画画，也不要求把每次挥手、点头都编成精确动作指令。辅助画面按需安排。</div>
+<details><summary>展开：为什么不继续拆成几十个 Skills？</summary><p>目前七本手册能覆盖完整创作工作，不必每新增一个工具就新增角色或技能。生成图片和片段放进媒体手册；检查候选素材复用成片审查；不同业务场景替换规则和模板。</p><p>主管的基础调度写在角色职责里。审批、权限和限额由程序强制校验，不能只靠手册写一句“请不要超限”。</p></details>
+</section>
+<section id="mcp">
+<div class="kicker">06 / MCP 与执行规则</div><h2>手册教怎么干，工具才真正干活</h2>
+<div class="grid two"><article class="card"><span class="icon" aria-hidden="true">🌐</span><h3>资料检索 MCP</h3><span class="tag">共享：资料＋审查</span><p>像查资料工具：找外部来源、读原文、留出处。</p></article><article class="card"><span class="icon" aria-hidden="true">🗂️</span><h3>项目资料与素材 MCP</h3><span class="tag">共享：五个角色按权限</span><p>像内部文件室：读需求、找脚本、查素材和版本。</p></article><article class="card"><span class="icon" aria-hidden="true">🧪</span><h3>媒体检测 MCP</h3><span class="tag">共享：媒体＋审查</span><p>像检查台：测参数、抽画面、听声音、认文字。</p></article><article class="card" style="border-color:var(--green)"><span class="icon" aria-hidden="true">🛠️</span><h3>媒体制作 MCP</h3><span class="tag">专属：只有媒体 Agent</span><p>像制作设备：复用固定人物，制作声音、人物说话与自然动作片段，再合成修复。</p></article></div>
+<p class="small">共 4 组创作 MCP：3 组共享＋1 组专属。共享不代表能看所有项目；专属不代表要单买一台服务器。工具与供应商的实际接入尚需实现。</p>
+<details><summary>展开：ASR、OCR 是什么？工具返回结果就算成功了吗？</summary><p><strong>ASR：</strong>把实际听到的语音转成文字。<strong>OCR：</strong>识别画面上的文字。配合参数探测与抽帧，给审查提供证据。</p><p>识别结果可能出错。抽查几张画面不代表全片每帧都检查过；工具也不能保证事实或素材授权正确。</p><p>媒体工具输入要有关联任务、镜头、脚本版本、参考素材、不可改变的事实与输出规格。输出要有操作编号、状态、实际产物引用、实际参数及可取得的用量费用。“已受理”不是“已生成”，“未知”不是“失败”或“零成本”。</p></details>
+<details><summary>展开：人物说话工具，还要明确哪些输入输出？</summary><p><strong>输入：</strong>人物参考及版本、声音设定、批准台词、任务与镜头、自然表达要求和输出规格；采用音频驱动路线时提供实际台词音频版本。</p><p><strong>输出：</strong>人物视频片段、实际参数、操作状态、所用人物和脚本及音频版本、可取得的用量费用。只有配音或静态图不算完成人物视频。</p><p><strong>待验证：</strong>具体模型、供应商、是否另需口型或动作处理，以及口型与人物检测工具。不能把普通抽帧或语音转写当成已经全面检查口型；无法判断时交人工。</p></details>
+<h3 style="margin-top:30px">每个需要生成的镜头，先出多少？</h3>
+<div class="grid three"><div class="card"><div class="big">3 张</div><h3>图片候选</h3><p class="small">每个需要生成图片的镜头，初次各 3 个。</p></div><div class="card"><div class="big">1 段</div><h3>视频片段候选</h3><p class="small">每个需要生成片段的镜头，初次各 1 个。</p></div><div class="card"><div class="big">1 条</div><h3>首次合成视频</h3><p class="small">用通过检查的素材组成初版成片。</p></div></div>
+<p>先由媒体 Agent 初筛，再由审查 Agent 检查，不是每次都让你来挑图。固定人物应复用参考，不是每个镜头重新任选一张脸；只有确实需要生成图片的镜头才适用 3 个候选。生成画面不能作为知识结论的证据。</p>
+<h3>五个阶段各有一次修改机会，但总共最多用四轮</h3>
+<div class="diagram"><div class="flow"><div class="box">资料<br><strong>≤1 轮</strong></div><div class="box">脚本<br><strong>≤1 轮</strong></div><div class="box">图片<br><strong>≤1 轮</strong></div><div class="box">片段<br><strong>≤1 轮</strong></div><div class="box">成片<br><strong>≤1 轮</strong></div></div><div class="tickets" aria-label="全任务自动返工共四轮额度"><span class="ticket">1</span><span class="ticket">2</span><span class="ticket">3</span><span class="ticket">4</span></div><p class="caption">想象全任务只有四张“自动返工券”，每个阶段最多用一张。先碰到哪个限制，就按哪个停。</p></div>
+<details><summary>展开：返工与重试，最容易混淆的细节</summary><ul><li><strong>阶段一轮，不是每镜头各一轮。</strong>集中处理一批已定位的问题，不能不断加问题让一轮永远不结束。</li><li>三张图都不合格时，每个受影响镜头只出一个修正版，不再新出三张；有选中的候选则优先修改它。</li><li>修改后仍不合格，转人工。你提意见后自动修改也占额度；换版本、换 Agent、断线恢复不清零。</li><li>技术故障首次失败后，适合重试时额外最多 2 次，即同一操作最多 3 次尝试；不同执行层不能各套一次限额。</li><li>“片段生成了但人物或台词不对”是返工；“请求临时失败”才可能是技术重试；超时结果不明先查询，不能直接重复扣费。</li><li>超限时带着现有产物、问题、尝试记录和用量交给你，不是让 AI 无限互相改稿。</li></ul></details>
+<div class="callout warn"><strong>声音修改怎么计数，仍待明确。</strong>建议人物说话片段归入视频片段阶段，改配音导致重做片段作为一次关联修复，但这不是已定稿的计数规则。人物首次建立的额度也待明确；遇到无法归类的修改，先转人工，不增加第六个返工阶段，也不自行增加预算。</div>
+<h3 style="margin-top:30px">视频批准了，也不会自动发到抖音</h3>
+<div class="grid two"><article class="card"><h3>方式一：你手动发</h3><p>下载视频和发布文案 → 自行上传 → 回填链接或作品编号 → 核实公开状态。</p></article><article class="card"><h3>方式二：系统代发</h3><p>选择授权账号 → 预览发布设置 → <strong>单独确认发布</strong> → 受控提交 → 核实公开状态。</p></article></div>
+<div class="callout warn"><strong>三件事分开：</strong>批准视频 ≠ 允许代发；提交成功 ≠ 已公开；结果未知 ≠ 可以再发一次。</div>
+<p class="small">代发需要实际可用的官方接口能力与有效授权，目前不能假定已接通。发布模块归属和文案准备职责待定，不因此新增第六个 Agent 或第五组创作 MCP。</p>
+</section>
+<section id="metrics">
+<div class="kicker">07 / 评估指标</div><h2>先别犯大错，再看是否省事，最后找原因</h2>
+<p>采用原讨论的“一、底线；二、六个核心指标；四、辅助诊断”。不是漏了第三类，而是保留选定的分类。</p>
+<h3>第一层：三条不能越过的底线</h3>
+<div class="grid three"><div class="card"><div class="big">0 项</div><h3>关键事实错误</h3><p class="small">人工复核验收测试集中，不编知识、不遗漏关键适用条件，不把虚构当事实。</p></div><div class="card"><div class="big">0 次</div><h3>审批与权限违规</h3><p class="small">专项测试中，不越权、不跳审核、不擅自发布。</p></div><div class="card"><div class="big">0 次</div><h3>执行失控</h3><p class="small">专项测试中，不超额、不无限重试、不重复执行。</p></div></div>
+<p class="small">这是测试范围内的验收目标，不是实测成绩，也不是保证生产环境永远零错误。样本与测试计划还没确认。</p>
+<h3>第二层：六个核心指标，三个数值已定</h3>
+<div class="grid three"><article class="card"><span class="tag">目标已确认 · 尚未评估</span><div class="big">≥90%</div><h3>创作任务完成率</h3><p>约定时间与额度内，能交付多少合格任务。</p></article><article class="card"><span class="tag">目标已确认 · 尚未评估</span><div class="big">≥80%</div><h3>首次人工通过率</h3><p>第一次给人看成片，有多少直接通过。</p></article><article class="card"><span class="tag">目标已确认 · 尚未评估</span><div class="big">≥30%</div><h3>人工投入下降</h3><p>相比纯人工，实际人工时间减少多少。</p></article><article class="card"><span class="tag pending">数值待定 · 未采集</span><h3>单条合格视频总成本</h3><p>连失败、返工和人工一起算，一条合格视频花多少钱。</p></article><article class="card"><span class="tag pending">目标与窗口待定 · 未采集</span><h3>公开发布达成率</h3><p>到约定时间，计划发布的作品有多少核实已公开。</p></article><article class="card"><span class="tag pending">数值待定 · 未采集</span><h3>完播率</h3><p>观众是否看完；沿用实际可获取的抖音数据定义。</p></article></div>
+<details><summary>展开：用简单算术理解，但这些不是实测成绩</summary><p>假设有 10 个有效创作任务，在约定条件下完成 9 个，就是 90%。正常人工审批允许，但人接手制作完成，不能算系统自动完成。</p><p>假设 10 个任务的第一次人工审核都有结论，8 个直接批准，就是 80%。内部已经改过几轮仍要披露；“首次人工通过”不等于“第一次生成就完美”。待审任务单列。</p><p>同样质量与复杂度，原来人工做 100 分钟，用系统后实际人工用 70 分钟，就是下降 30%。其中审核和异常处理都算人工，无人看管的机器等待不算人工工时。</p><p>成本看同批全部成本除以合格交付数；发布看应完成的计划发布中核实公开的比例，手动与代发分列去重。完播率不能用来替代创作完成率。</p></details>
+<h3 style="margin-top:26px">人物知识讲解，还要检查这些</h3>
+<p class="small">补充质量检查，不替换六个核心指标。检查方法、自动化覆盖与数值阈值待定；实际结果未采集。</p>
+<div class="grid two"><article class="card"><h3>知识对，讲得明白</h3><p>知识准确、条件完整；解释通俗、例子不误导。人物再好看，也不能把知识讲错。</p></article><article class="card"><h3>说得对，嘴型协调</h3><p>不漏说、错说、加话。嘴部动作与实际音频配合，字幕与内容对应。</p></article><article class="card"><h3>仍是同一位讲解者</h3><p>跨镜头和跨视频对照人物参考；声音符合设定，不突兀变声。具体固定音色尚未选定。</p></article><article class="card"><h3>动作自然，声画配合</h3><p>表情、点头和手势不抢戏；按需使用的配图、字幕与讲解含义对应。不考核拿物品或精准指向。</p></article></div>
+<p class="small">来源、使用范围、版本属于业务校验，不与画质混成一个分数。口型通过不代表知识正确，检查结论不代替人工批准。</p>
+<h3 style="margin-top:26px">第三层：辅助诊断，帮你知道为什么</h3>
+<div class="flow"><div class="box">工具稳不稳</div><div class="box">哪一步最慢</div><div class="box">记忆找得准不准</div><div class="box">观看互动怎样</div><div class="box">出问题能否追溯</div></div>
+<div class="callout"><strong>还没采集，不等于 0；还没测试，不等于通过。</strong>所有真实结果目前都未采集。具体辅助阈值、成本上限、公开发布和完播目标都不能自作主张填写。</div>
+<details><summary>展开：哪些“好看的数字”现在不能写？</summary><p>不能把工具成功率 ≥95%、记忆命中率 ≥90%、完播率提高 3 个百分点等曾讨论的建议当成已确认目标，也没有确认固定样本规模。</p><p>分母为零或数据缺失，应显示暂不可计算。抖音数据必须确实有授权或由用户提供后台记录；同账号、主题、时长和观察窗口才尽量可比，付费与自然流量分开。</p><p>当前不把订单、销售额或商品转化列作核心目标。完成率高不能抵消权限违规，播放量高也不能抵消编造事实。</p></details>
+</section>
+<section id="recap">
+<div class="kicker">最后 / 一分钟记住</div><h2>记住这五句话，就懂了主干</h2>
+<ol><li><strong>做什么：</strong>由固定 AI 虚构成年女性，把可信知识自然讲出来，形成可审批、可交付的视频。</li><li><strong>谁来做：</strong>一个主管＋资料、脚本、媒体、审查四个助手。</li><li><strong>怎么做：</strong>七本工作手册＋四组工具，上下文与三层记忆提供正确资料。</li><li><strong>怎么管：</strong>版本、权限、两次关键审批、返工限额；代发另需单独确认。</li><li><strong>怎么看值不值：</strong>先守三条底线，再看完成率、首次通过率、成本、人工投入、公开发布和完播。</li></ol>
+<div class="grid two"><article class="card"><h3>方向已经明确</h3><p>固定写实虚构女性、自然女声方向与自然动作；原有五个 Agent、七个 Skills、四组创作 MCP、三层记忆、返工上限及已确认指标不变。</p></article><article class="card"><h3>还有事情没定</h3><p>具体人物与音色、人物档案字段和预览审批、生成模型、声音关联返工归属、人物质量阈值；以及发布接入、部署预算与其余评估方案。</p></article></div>
+<div class="callout warn"><strong>最重要的边界：</strong>这份文档回答“我们决定把它做成什么样”，不证明“现在已经全部做完”。本图解只是原文总结，没有新增需求、没有检查当前实现、没有接入真实指标。</div>
+</section>
+<footer class="footer">来源：<a href="2026-09-23-project-background-and-architecture.md">项目背景与架构设计整理（原始 Markdown）</a> · 已同步固定人物知识讲解补充。单文件本地图解，无外部字体、图片、请求或数据上传。<br>默认先看大图与结论；点“展开”看细节。打印前可点击“展开全部详细解释”。</footer>
+</main>
+<script>
+const explanations = document.querySelectorAll('details');
+document.getElementById('expand').addEventListener('click', () => { explanations.forEach(explanation => { explanation.open = true; }); });
+document.getElementById('collapse').addEventListener('click', () => { explanations.forEach(explanation => { explanation.open = false; }); });
+</script>
+</body></html>

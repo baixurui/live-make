@@ -55,6 +55,11 @@ class BusinessApi:
                 task_id = route.split("/")[5]
                 return Response(201, self.database.add_publication_receipt(headers.get("x-service-id", "publishing-insights"), task_id, str(body["platform"]), str(body["external_id"]), str(body["status"]), body.get("response")))
             actor = self._actor(headers)
+            if method == "GET" and route == "/api/v1/auth/me":
+                return Response(200, actor)
+            if method == "POST" and route == "/api/v1/auth/logout":
+                self.sessions.pop(headers.get("authorization", "")[7:], None)
+                return Response(204)
             if method == "GET" and route == "/api/v1/topics":
                 return Response(200, self.database.list_topics(enabled_only=True))
             if method == "POST" and route == "/api/v1/topics":
@@ -69,6 +74,8 @@ class BusinessApi:
             if method == "GET" and route == "/api/v1/tasks":
                 return Response(200, self.database.list_tasks(query.get("status")))
             if method == "POST" and route == "/api/v1/tasks":
+                if not isinstance(body.get("title"), str) or not 1 <= len(body["title"].strip()) <= 120:
+                    raise ValueError("task title must contain 1-120 characters")
                 return Response(201, self.database.create_task(actor["id"], str(body["title"]), body.get("topic_id"), str(body.get("risk_level", "LOW"))))
             if method == "GET" and route.startswith("/api/v1/tasks/") and route.endswith("/audit"):
                 task_id = route.split("/")[4]
