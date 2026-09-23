@@ -121,6 +121,11 @@ class Database:
         self.connection.row_factory = sqlite3.Row
         self.connection.execute("PRAGMA foreign_keys = ON")
         self.connection.executescript(SCHEMA)
+        columns = {row[1] for row in self.connection.execute("PRAGMA table_info(approvals)")}
+        if "script_version" not in columns:
+            self.connection.execute("ALTER TABLE approvals ADD COLUMN script_version INTEGER")
+        if "media_version" not in columns:
+            self.connection.execute("ALTER TABLE approvals ADD COLUMN media_version INTEGER")
         self.connection.commit()
 
     def close(self) -> None:
@@ -245,6 +250,9 @@ class Database:
         return self._task(row)
 
     def transition_task(self, actor_id: str, task_id: str, target: str, reason: str = "") -> None:
+        if self.connection.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='workflow_tasks'").fetchone():
+            if self.connection.execute("SELECT 1 FROM workflow_tasks WHERE task_id=?", (task_id,)).fetchone():
+                raise ValueError("managed task transitions must execute through the workflow engine")
         row = self.connection.execute("SELECT status FROM tasks WHERE id = ?", (task_id,)).fetchone()
         if row is None:
             raise KeyError("task not found")
@@ -263,16 +271,30 @@ class Database:
         version = self._next_version("media_versions", task_id)
         return self._add_version("media_versions", actor_id, task_id, version, uri=uri, metadata=metadata or {})
 
-    def add_approval(self, actor_id: str, task_id: str, kind: str, decision: str, comment: str = "") -> dict[str, Any]:
+    def add_approval(self, actor_id: str, task_id: str, kind: str, decision: str, comment: str = "", expected_version: int | None = None) -> dict[str, Any]:
         if decision not in {"APPROVED", "REJECTED"}:
             raise ValueError("invalid approval decision")
-        self.get_task(task_id)
+        if kind not in {"SCRIPT", "VIDEO"}:
+            raise ValueError("invalid approval kind")
+        task = self.get_task(task_id)
+        actual_version = task["current_script_version"] if kind == "SCRIPT" else task["current_media_version"]
+        if expected_version is not None and expected_version != actual_version:
+            raise ValueError("approval version is no longer current")
+        if self.connection.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='workflow_tasks'").fetchone():
+            managed = self.connection.execute("SELECT payload FROM workflow_tasks WHERE task_id=?", (task_id,)).fetchone()
+            if managed:
+                workflow = json.loads(managed[0])
+                expected_status = "SCRIPT_PENDING_APPROVAL" if kind == "SCRIPT" else "VIDEO_PENDING_APPROVAL"
+                if workflow["status"] != expected_status or task["risk_level"] == "BLOCKED":
+                    raise ValueError("task is not accepting this approval")
+                if task["current_script_version"] != workflow["script_version"] or (kind == "VIDEO" and actual_version != workflow["media_version"]):
+                    raise ValueError("workflow content version changed")
         approval_id = _id()
         now = _now()
-        self.connection.execute("INSERT INTO approvals VALUES (?, ?, ?, ?, ?, ?, ?)", (approval_id, task_id, kind, decision, comment, actor_id, now))
+        self.connection.execute("INSERT INTO approvals(id, task_id, kind, decision, comment, decided_by, created_at, script_version, media_version) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", (approval_id, task_id, kind, decision, comment, actor_id, now, task["current_script_version"], task["current_media_version"]))
         self.connection.commit()
         self.audit(actor_id, "approval.created", "task", task_id, {"kind": kind, "decision": decision})
-        return {"id": approval_id, "task_id": task_id, "kind": kind, "decision": decision, "comment": comment, "decided_by": actor_id, "created_at": now}
+        return {"id": approval_id, "task_id": task_id, "kind": kind, "decision": decision, "comment": comment, "decided_by": actor_id, "created_at": now, "script_version": task["current_script_version"], "media_version": task["current_media_version"]}
 
     def add_asset(self, actor_id: str, task_id: str, kind: str, uri: str, metadata: dict[str, Any] | None = None) -> dict[str, Any]:
         self.get_task(task_id)
