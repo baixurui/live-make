@@ -8,6 +8,7 @@ UTC = timezone.utc
 SHANGHAI = timezone(timedelta(hours=8), name="Asia/Shanghai")
 WEEK = timedelta(days=7)
 Identifier = Annotated[str, Field(min_length=1, max_length=256, pattern=r"\S")]
+Version = Annotated[int, Field(ge=1, strict=True)]
 
 
 def utc_now() -> datetime:
@@ -37,7 +38,7 @@ class PublishData(StrictModel):
     receipt_id: Identifier
     scheduled_at: datetime
     account_id: Identifier | None = None
-    media_version: Identifier | None = None
+    media_version: Version | None = None
 
     _aware = field_validator("scheduled_at", mode="before")(aware)
 
@@ -61,8 +62,8 @@ class TaskContext(StrictModel):
                     "MEDIA_QC_RUNNING", "VIDEO_PENDING_APPROVAL", "VIDEO_APPROVED", "VIDEO_REJECTED",
                     "SCHEDULED", "PUBLISHING", "PUBLISHED", "PAUSED", "FAILED", "CANCELLED"]
     scheduled_at: datetime
-    media_version: Identifier
-    approved_media_version: Identifier
+    media_version: Version
+    approved_media_version: Version
     script_approved: bool
     video_approved: bool
     qc_passed: bool
@@ -90,7 +91,7 @@ class Receipt(StrictModel):
     receipt_id: str
     task_id: str
     account_id: str
-    media_version: str
+    media_version: Version
     idempotency_key: str
     status: Literal["PROCESSING", "SUCCEEDED", "FAILED", "ABORTED"]
     accepted_at: datetime
@@ -114,6 +115,7 @@ class FailedData(StrictModel):
     retryable: Literal[False]
     attempt: Annotated[int, Field(ge=0, le=2)]
     receipt_id: str
+    request_key: str
 
 
 class PublishedEvent(StrictModel):

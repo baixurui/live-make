@@ -2,45 +2,136 @@ openapi: 3.1.0
 info:
   title: Live Make MVP API
   version: 1.0.0
+components:
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+    bearerAuth:
+      type: http
+      scheme: bearer
+  schemas:
+    LoginRequest:
+      type: object
+      required: [username, password]
+      properties:
+        username: {type: string}
+        password: {type: string, format: password}
+    TopicRequest:
+      type: object
+      required: [name]
+      properties:
+        name: {type: string}
+        keywords: {type: array, items: {type: string}}
+        enabled: {type: boolean}
+    TaskRequest:
+      type: object
+      required: [title]
+      properties:
+        title: {type: string}
+        topic_id: {type: string}
+        risk_level: {type: string, enum: [LOW, HIGH, BLOCKED]}
+    ApprovalRequest:
+      type: object
+      required: [kind, decision]
+      properties:
+        kind: {type: string, enum: [SCRIPT, VIDEO]}
+        decision: {type: string, enum: [APPROVED, REJECTED]}
+        comment: {type: string}
+        expected_version: {type: integer, minimum: 1, description: Reject approval if the displayed script or media version is no longer current.}
+    TransitionRequest:
+      type: object
+      required: [target_status]
+      properties:
+        target_status: {type: string}
+        reason: {type: string}
 paths:
   /api/v1/auth/login:
     post:
       summary: Authenticate a pre-created internal account
+      requestBody:
+        required: true
+        content:
+          application/json: {schema: {$ref: '#/components/schemas/LoginRequest'}}
       responses:
         '200':
           description: Authenticated
   /api/v1/topics:
     get:
       summary: List enabled topics
+      security: [{bearerAuth: []}]
       responses:
         '200':
           description: Topic list
     post:
       summary: Create a topic as an administrator
+      security: [{bearerAuth: []}]
+      requestBody:
+        required: true
+        content:
+          application/json: {schema: {$ref: '#/components/schemas/TopicRequest'}}
       responses:
         '201':
           description: Topic created
+  /api/v1/topics/{topic_id}:
+    patch:
+      summary: Enable or update a topic as an administrator
+      security: [{bearerAuth: []}]
+      parameters:
+        - in: path
+          name: topic_id
+          required: true
+          schema: {type: string}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                enabled: {type: boolean}
+                keywords: {type: array, items: {type: string}}
+      responses:
+        '200': {description: Topic updated}
   /api/v1/recommendations:
     get:
       summary: List daily topic recommendations
+      security: [{bearerAuth: []}]
       responses:
         '200':
           description: Recommendation list
   /api/v1/tasks:
     get:
       summary: List content tasks
+      security: [{bearerAuth: []}]
       responses:
         '200':
           description: Task list
+    post:
+      summary: Create a content task
+      security: [{bearerAuth: []}]
+      requestBody:
+        required: true
+        content:
+          application/json: {schema: {$ref: '#/components/schemas/TaskRequest'}}
+      responses:
+        '201':
+          description: Task created
   /api/v1/tasks/{task_id}:
     get:
       summary: Get a content task and audit summary
+      security: [{bearerAuth: []}]
       responses:
         '200':
           description: Task detail
   /api/v1/tasks/{task_id}/approvals:
     post:
       summary: Submit an approval decision
+      security: [{bearerAuth: []}]
+      requestBody:
+        required: true
+        content:
+          application/json: {schema: {$ref: '#/components/schemas/ApprovalRequest'}}
       responses:
         '201':
           description: Approval recorded
@@ -59,11 +150,93 @@ paths:
   /api/v1/internal/tasks/{task_id}/transitions:
     post:
       summary: Apply a workflow-authorized task transition
+      description: Registered workflow tasks are advanced transactionally by the workflow engine. This legacy endpoint rejects such tasks to prevent bypassing approval and scheduling gates.
+      parameters:
+        - in: header
+          name: X-Internal-Service
+          required: true
+          schema: {type: string, enum: [workflow]}
+      requestBody:
+        required: true
+        content:
+          application/json: {schema: {$ref: '#/components/schemas/TransitionRequest'}}
       responses:
         '204':
           description: Transition applied
-components:
-  securitySchemes:
-    HTTPBearer:
-      type: http
-      scheme: bearer
+  /api/v1/internal/tasks/{task_id}/script-versions:
+    post:
+      summary: Append a script version from content intelligence
+      parameters:
+        - in: header
+          name: X-Internal-Service
+          required: true
+          schema: {type: string, enum: [content-intelligence]}
+      responses:
+        '201': {description: Script version appended}
+  /api/v1/internal/tasks/{task_id}/media-versions:
+    post:
+      summary: Append a media version from media production
+      parameters:
+        - in: header
+          name: X-Internal-Service
+          required: true
+          schema: {type: string, enum: [media-production]}
+      responses:
+        '201': {description: Media version appended}
+  /api/v1/internal/tasks/{task_id}/assets:
+    post:
+      summary: Register a media asset from media production
+      parameters:
+        - in: header
+          name: X-Internal-Service
+          required: true
+          schema: {type: string, enum: [media-production]}
+      responses:
+        '201': {description: Asset registered}
+  /api/v1/internal/tasks/{task_id}/publication-receipts:
+    post:
+      summary: Record a publication receipt from publishing insights
+      parameters:
+        - in: header
+          name: X-Internal-Service
+          required: true
+          schema: {type: string, enum: [publishing-insights]}
+      responses:
+        '201': {description: Publication receipt recorded}
+  /api/v1/admin/accounts:
+    post:
+      summary: Create a local account as an administrator
+      security: [{bearerAuth: []}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [username, password]
+              properties:
+                username: {type: string}
+                password: {type: string, format: password}
+                is_admin: {type: boolean}
+      responses:
+        '201': {description: Account created}
+  /api/v1/admin/accounts/{account_id}:
+    patch:
+      summary: Enable, disable, or reset a local account
+      security: [{bearerAuth: []}]
+      parameters:
+        - in: path
+          name: account_id
+          required: true
+          schema: {type: string}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                enabled: {type: boolean}
+                password: {type: string, format: password}
+      responses:
+        '200': {description: Account updated}

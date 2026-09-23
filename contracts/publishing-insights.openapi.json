@@ -305,7 +305,7 @@
     "/api/v1/internal/tasks/{task_id}/publishing-context": {
       "get": {
         "summary": "Business API: trusted current publishing context",
-        "description": "Provider-owned integration endpoint; business API must implement before live integration.",
+        "description": "Implemented by Business API; requires its dedicated publishing service Bearer credential.",
         "operationId": "get_publishing_context",
         "security": [
           {
@@ -340,8 +340,8 @@
           "404": {
             "description": "Unknown task"
           },
-          "503": {
-            "description": "Business state unavailable"
+          "409": {
+            "description": "Task has no usable scheduled workflow context"
           }
         }
       }
@@ -475,6 +475,10 @@
           "receipt_id": {
             "type": "string",
             "title": "Receipt Id"
+          },
+          "request_key": {
+            "type": "string",
+            "title": "Request Key"
           }
         },
         "additionalProperties": false,
@@ -485,7 +489,8 @@
           "error_code",
           "retryable",
           "attempt",
-          "receipt_id"
+          "receipt_id",
+          "request_key"
         ],
         "title": "FailedData"
       },
@@ -727,10 +732,8 @@
           "media_version": {
             "anyOf": [
               {
-                "type": "string",
-                "maxLength": 256,
-                "minLength": 1,
-                "pattern": "\\S"
+                "type": "integer",
+                "minimum": 1.0
               },
               {
                 "type": "null"
@@ -882,7 +885,8 @@
             "title": "Account Id"
           },
           "media_version": {
-            "type": "string",
+            "type": "integer",
+            "minimum": 1.0,
             "title": "Media Version"
           },
           "idempotency_key": {
@@ -1043,18 +1047,14 @@
             "type": "string"
           },
           "media_version": {
-            "maxLength": 256,
-            "minLength": 1,
-            "pattern": "\\S",
+            "minimum": 1,
             "title": "Media Version",
-            "type": "string"
+            "type": "integer"
           },
           "approved_media_version": {
-            "maxLength": 256,
-            "minLength": 1,
-            "pattern": "\\S",
+            "minimum": 1,
             "title": "Approved Media Version",
-            "type": "string"
+            "type": "integer"
           },
           "script_approved": {
             "title": "Script Approved",

@@ -67,7 +67,8 @@
         "media_version": {
           "anyOf": [
             {
-              "$ref": "#/$defs/identifier"
+              "type": "integer",
+              "minimum": 1
             },
             {
               "type": "null"
